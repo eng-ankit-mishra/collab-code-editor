@@ -155,7 +155,7 @@ export default function RecentCard({
             <div className="space-y-1 pt-2 text-sm text-zinc-400">
               <p className="flex items-center gap-2">
                 <Code size={14} />
-                Language: {p.template?.label ?? "Unknown"}
+                Language: {p.template?.name ?? "Unknown"}
               </p>
 
               <p className="flex items-center gap-2">

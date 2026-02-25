@@ -209,7 +209,7 @@ export default function SharedWithMe() {
           <div className="space-y-1 pt-2 mb-4 mt-1">
             <p className="flex gap-2 items-center">
               <Code size={14}/> 
-              <span>Language: {project.template.label}</span>  
+              <span>Language: {project.template.name}</span>  
             </p>
           {/* Role */}
             <p className="mt-1">

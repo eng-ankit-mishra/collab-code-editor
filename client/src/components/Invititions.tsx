@@ -123,7 +123,7 @@ export default function Invitations() {
             <p className="mt-1 flex gap-2 items-center">
             <Code size={14}/>
             <span>Language:{" "}
-            {invite.projectId.template.label}
+            {invite.projectId.template.name}
             </span>
           </p>
           <p className=" mt-1 ">
