@@ -84,7 +84,7 @@ const lang = [
 ];
 
 async function getRuntimes() {
-  const res = await fetch("http://3.110.31.131:2358/languages");
+  const res = await fetch("/api/languages");
   const data = await res.json();
 
   if (data) {
