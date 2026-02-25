@@ -23,7 +23,7 @@ const projectSchema = new Schema(
 
     template: {
       name: { type: String, default: "custom" },
-      id: { type: Number, required},
+      id: { type: Number, default: "1.0.0" },
       alias: { type: String, default: "txt" },
       boilerplate: { type: String, default: "" },
     },
