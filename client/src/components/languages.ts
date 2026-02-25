@@ -94,12 +94,16 @@ export async function getRuntimes(): Promise<Language[]> {
 
       // 3. Fix the 'Number' type
       data.forEach((runtime: { id: number; name: string }) => {
-        const langName = runtime.name.toLowerCase();
+        
         
         // 4. Use .startsWith() to match Judge0's versioned names (e.g., "python (3.8.1)")
-        const matchedLang = lang.find((l) => 
-          langName.startsWith(l.label.toLowerCase())
-        );
+        const cleanLangName = runtime.name.split(" (")[0].toLowerCase().trim();
+
+  // 2. Use strict equality to avoid the "java" vs "javascript" collision
+  const matchedLang = lang.find(
+    (l) => l.label.toLowerCase() === cleanLangName
+  );
+        
 
         if (matchedLang && !seen.has(matchedLang.label)) {
           seen.add(matchedLang.label);
