@@ -158,10 +158,10 @@ export default function CodeArea({
 
     setLoading(true);
     try {
-      const { label, version } = projectObject.template;
+      const { id} = projectObject.template;
 
       const { run } = await executeCode(
-        { label, version },
+        {id},
         editorRef.current.getValue(),
         input
       );
@@ -248,7 +248,7 @@ export default function CodeArea({
           <Editor
             theme="vs-dark"
             height="100%"
-            language={projectObject.template.label.toLowerCase()}
+            language={projectObject.template.name.toLowerCase()}
             value={value}
             onMount={(editor) => (editorRef.current = editor)}
             onChange={

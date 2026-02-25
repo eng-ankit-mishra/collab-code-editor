@@ -2,8 +2,8 @@
 import type { IconType } from "react-icons";
 
 export type Language = {
-  label: string;
-  version: string;
+  id: Number;
+  name: string;
   alias:string,
   icon?: IconType;
   color?: string;

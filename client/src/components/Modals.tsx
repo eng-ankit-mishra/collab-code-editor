@@ -32,13 +32,12 @@ export default function Modals({ setShowModals, create }: ModalProps) {
       return;
     }
 
-    // ✅ Template only (no userId)
     const projectObj: ProjectDetails = {
       projectName,
       code: "",
       template: {
-        label: lang.label,
-        version: lang.version,
+        id: lang.id,
+        name: lang.name,
         alias: lang.alias,
         boilerplate: lang.boilerplate,
       },
@@ -113,15 +112,15 @@ return (
 
                   if(Icon){
                     return(
-                    <div key={item.label} className="flex flex-col items-center justify-center gap-2">
+                    <div key={item.name} className="flex flex-col items-center justify-center gap-2">
                       <div onClick={()=>handleLangChange(item)} className={`p-2 rounded cursor-pointer border transition-all duration-200
-                      ${lang.label === item.label
+                      ${lang.name === item.name
                       ? "border-blue-400 bg-blue-900/30 shadow-[0_0_0_2px_#3b82f6]"
                     : "hover:bg-neutral-800 border-white/20"}`}
                         >
                         <Icon size={28} className={item.color}/>
                       </div>
-                      <p className="text-xs text-gray-200">{item.label}</p>
+                      <p className="text-xs text-gray-200">{item.name}</p>
                     </div>
                   )
                   }

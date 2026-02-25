@@ -84,15 +84,15 @@ const lang = [
 ];
 
 async function getRuntimes() {
-  const res = await fetch("https://emkc.org/api/v2/piston/runtimes");
+  const res = await fetch("http://3.110.31.131:2358:2358/languages");
   const data = await res.json();
 
   if (data) {
     const seen = new Set<string>();
 
     data.forEach(
-      (runtime: { language: string; version: string; aliases: string[] }) => {
-        const langName = runtime.language.toLowerCase();
+      (runtime: {id: Number; name: string}) => {
+        const langName = runtime.name.toLowerCase();
         const matchedLang = lang.find(
           (l) => l.label.toLowerCase() === langName
         );
@@ -101,11 +101,10 @@ async function getRuntimes() {
           seen.add(langName);
 
           language.push({
-            label: matchedLang.label,
-            version: runtime.version,
+            id: runtime.id,
+            name: matchedLang.label,
             alias:
               ALIAS_MAP[langName] ??
-              runtime.aliases?.[0] ??
               langName,
             icon: matchedLang.icon,
             color: matchedLang.color,
