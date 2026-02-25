@@ -2,15 +2,27 @@ import Button from "./Button";
 import { PlusCircle, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { language } from "./languages";
-import type { Language } from "./Types";
-import type { ModalProps, ProjectDetails } from "./Types";
+import { getRuntimes } from "./languages";
+import type { Language, ModalProps, ProjectDetails } from "./Types"; // Combined imports
 
 export default function Modals({ setShowModals, create }: ModalProps) {
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
-  const [lang, setLang] = useState(language[0]);
+  
+  // 1. Added TypeScript types to State
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [lang, setLang] = useState<Language | null>(null); 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // 2. Set the default language ONLY after the data successfully loads
+    getRuntimes().then((data) => {
+      setLanguages(data);
+      if (data.length > 0) {
+        setLang(data[0]); 
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (isError) {
@@ -23,10 +35,10 @@ export default function Modals({ setShowModals, create }: ModalProps) {
     setLoading(true);
 
     const rawName = formData.get("project");
-    const projectName =
-      typeof rawName === "string" ? rawName.trim() : "";
+    const projectName = typeof rawName === "string" ? rawName.trim() : "";
 
-    if (!projectName) {
+    // 3. Prevent submission if data hasn't loaded or input is empty
+    if (!projectName || !lang) {
       setIsError(true);
       setLoading(false);
       return;
@@ -65,7 +77,7 @@ export default function Modals({ setShowModals, create }: ModalProps) {
     setLang(selectedLang);
   }
 
-return (
+  return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="w-md bg-neutral-900  px-6 py-8 rounded-xl relative border border-white/10 shadow-md">
         <button
@@ -104,36 +116,44 @@ return (
             <label htmlFor="template" className="block  mt-5">
               Select Template
             </label>
-            
-            <div className="grid grid-cols-3 gap-12 gap-x-16 py-8 p-6">
-              {
-                language.map((item)=>{
-                  const Icon=item.icon
 
-                  if(Icon){
-                    return(
+            <div className="grid grid-cols-3 gap-12 gap-x-16 py-8 p-6">
+              {/* 4. Fixed typo: mapped over 'languages' instead of 'language' */}
+              {languages.map((item) => {
+                const Icon = item.icon;
+
+                if (Icon) {
+                  return (
                     <div key={item.name} className="flex flex-col items-center justify-center gap-2">
-                      <div onClick={()=>handleLangChange(item)} className={`p-2 rounded cursor-pointer border transition-all duration-200
-                      ${lang.name === item.name
-                      ? "border-blue-400 bg-blue-900/30 shadow-[0_0_0_2px_#3b82f6]"
-                    : "hover:bg-neutral-800 border-white/20"}`}
-                        >
-                        <Icon size={28} className={item.color}/>
+                      <div
+                        onClick={() => handleLangChange(item)}
+                        className={`p-2 rounded cursor-pointer border transition-all duration-200
+                      ${
+                        // 5. Added optional chaining (lang?.name) to prevent crashes while loading
+                        lang?.name === item.name
+                          ? "border-blue-400 bg-blue-900/30 shadow-[0_0_0_2px_#3b82f6]"
+                          : "hover:bg-neutral-800 border-white/20"
+                      }`}
+                      >
+                        <Icon size={28} className={item.color} />
                       </div>
                       <p className="text-xs text-gray-200">{item.name}</p>
                     </div>
-                  )
-                  }
-                
-                  
-                })
-              }
-
+                  );
+                }
+                return null; // Added fallback return for map function
+              })}
             </div>
           </div>
 
           <Button type="submit" disabled={loading} className="w-full h-8 block">
-             {loading ? (<div className='w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin'/>) : <> <PlusCircle size={18} /> Create</>}
+            {loading ? (
+              <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin mx-auto" />
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <PlusCircle size={18} /> Create
+              </div>
+            )}
           </Button>
 
           {isError && (
@@ -146,4 +166,3 @@ return (
     </div>
   );
 }
-

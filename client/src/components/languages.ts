@@ -11,7 +11,6 @@ import {
   SiRust,
 } from "react-icons/si";
 
-export const language: Language[] = [];
 
 /* 🔒 Hardcoded correct aliases for Piston */
 const ALIAS_MAP: Record<string, string> = {
@@ -83,37 +82,44 @@ const lang = [
   },
 ];
 
-async function getRuntimes() {
-  const res = await fetch("/api/languages");
-  const data = await res.json();
+export async function getRuntimes(): Promise<Language[]> {
+  try {
+    const res = await fetch("/api/languages");
+    const data = await res.json();
+    
+    const finalLanguages: Language[] = [];
 
-  if (data) {
-    const seen = new Set<string>();
+    if (data) {
+      const seen = new Set<string>();
 
-    data.forEach(
-      (runtime: {id: Number; name: string}) => {
+      // 3. Fix the 'Number' type
+      data.forEach((runtime: { id: number; name: string }) => {
         const langName = runtime.name.toLowerCase();
-        const matchedLang = lang.find(
-          (l) => l.label.toLowerCase() === langName
+        
+        // 4. Use .startsWith() to match Judge0's versioned names (e.g., "python (3.8.1)")
+        const matchedLang = lang.find((l) => 
+          langName.startsWith(l.label.toLowerCase())
         );
 
-        if (matchedLang && !seen.has(langName)) {
-          seen.add(langName);
+        if (matchedLang && !seen.has(matchedLang.label)) {
+          seen.add(matchedLang.label);
 
-          language.push({
+          finalLanguages.push({
             id: runtime.id,
             name: matchedLang.label,
-            alias:
-              ALIAS_MAP[langName] ??
-              langName,
+            alias: ALIAS_MAP[matchedLang.label.toLowerCase()] ?? matchedLang.label.toLowerCase(),
             icon: matchedLang.icon,
             color: matchedLang.color,
             boilerplate: matchedLang.boilerplate,
           });
         }
-      }
-    );
+      });
+    }
+    
+    return finalLanguages;
+    
+  } catch (error) {
+    console.error("Failed to fetch languages:", error);
+    return [];
   }
 }
-
-getRuntimes();
