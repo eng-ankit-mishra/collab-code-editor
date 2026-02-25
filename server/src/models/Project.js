@@ -22,8 +22,8 @@ const projectSchema = new Schema(
     },
 
     template: {
-      label: { type: String, default: "custom" },
-      version: { type: String, default: "1.0.0" },
+      name: { type: String, default: "custom" },
+      id: { type: Number, required},
       alias: { type: String, default: "txt" },
       boilerplate: { type: String, default: "" },
     },

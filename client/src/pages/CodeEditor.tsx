@@ -69,7 +69,7 @@ export default function CodeEditor() {
         shareRequired={accessRole === "OWNER"}
         projectName={
           project
-            ? `${project.projectName} / ${project.template?.label || "No Label"}`
+            ? `${project.projectName} / ${project.template?.name || "No Label"}`
             : ""
         }
       />
