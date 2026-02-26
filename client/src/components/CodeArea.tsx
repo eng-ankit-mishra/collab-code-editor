@@ -158,17 +158,24 @@ export default function CodeArea({
 
     setLoading(true);
     try {
-      const { id} = projectObject.template;
+      const {id} = projectObject.template;
 
-      const { run } = await executeCode(
+      const result = await executeCode(
         {id},
         editorRef.current.getValue(),
         input
       );
 
-      setConsoleText(run.stderr ? "text-red-500" : "text-white");
-      setOutput(run.output);
-    } catch (err) {
+      if (result.compile_output) {
+        setConsoleText("text-red-500");
+        setOutput(result.compile_output);
+      } else if (result.stderr) {
+        setConsoleText("text-red-500");
+        setOutput(result.stderr);
+      } else {
+        setConsoleText("text-white");
+        setOutput(result.stdout || "Execution finished with no output.");
+    }} catch (err) {
       console.error(err);
       setConsoleText("text-red-500");
       setOutput("Error running code.");
