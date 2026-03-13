@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Builder
-@Document(collation = "users")
+@Document(collection = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
@@ -37,7 +37,7 @@ public class User implements UserDetails {
     private String avatarUrl;
 
     private AuthProvider authProvider;
-    private String provider_id;
+    private String providerId;
     private String password;
     private Set<String> roles;
 
