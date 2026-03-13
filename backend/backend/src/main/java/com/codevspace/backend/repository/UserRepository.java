@@ -1,8 +1,9 @@
 package com.codevspace.backend.repository;
 
 
+import com.codevspace.backend.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.security.core.userdetails.User;
+
 
 import java.util.Optional;
 
