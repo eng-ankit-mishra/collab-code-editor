@@ -2,24 +2,24 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
 import HomePage from "./pages/Home";
-import LogIn from "./pages/Login";
-import SignUp from "./pages/SignUp";
+import LogIn from "./features/auth/pages/Login.tsx";
+import SignUp from "./features/auth/pages/SignUp.tsx";
 import NotFoundPage from "./pages/NotFound";
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
-import SplashScreen from "./components/FullScreenLoader";
-import ResetPassword from "./pages/ResetPassword";
-import ChangePassword from "./pages/ChangePassword";
+import SplashScreen from "./components/loader/FullScreenLoader.tsx";
+import ResetPassword from "./features/auth/pages/ResetPassword.tsx";
+import ChangePassword from "./features/auth/pages/ChangePassword.tsx";
 import {ToastContainer} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
-import Invititions from "./components/Invititions";
+import Invititions from "./features/dashboard/components/Invititions.tsx";
 
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const CodeEditor = lazy(() => import("./pages/CodeEditor"));
-const AllRepository = lazy(() => import("./components/AllRepository"));
-const Recent = lazy(() => import("./components/Recent"));
-const Settings= lazy(()=>import("./components/Settings"));
-const SharedWithMe=lazy(()=>import("./components/ShareWithMe"))
+const Dashboard = lazy(() => import("./features/dashboard/pages/Dashboard.tsx"));
+const CodeEditor = lazy(() => import("./features/editor/pages/CodeEditor.tsx"));
+const AllRepository = lazy(() => import("./features/repository/components/AllRepository.tsx"));
+const Recent = lazy(() => import("./features/repository/components/Recent.tsx"));
+const Settings= lazy(()=>import("./features/dashboard/components/Settings.tsx"));
+const SharedWithMe=lazy(()=>import("./features/dashboard/components/ShareWithMe.tsx"))
 
 export default function App() {
   return (

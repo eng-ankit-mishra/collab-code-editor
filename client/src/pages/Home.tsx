@@ -1,12 +1,12 @@
 import { ArrowRight } from 'lucide-react';
-import NavBar from '../components/NavBar';
-import Button from "../components/Button"
-import Footer from '../components/Footer';
-import Features from '../components/Features';
+import NavBar from '../components/layout/NavBar.tsx';
+import Button from "../components/ui/Button.tsx"
+import Footer from '../components/layout/Footer.tsx';
+import Features from '../features/home/components/Features.tsx';
 import {useNavigate} from "react-router-dom"
 
-import { useAuth } from '../context/useAuth';
-import Contact from '../components/ContactForm';
+import { useAuth } from '../features/auth/context/useAuth.tsx';
+import Contact from '../features/contact/components/ContactForm.tsx';
 
 export default function HomePage(){
   const {session}=useAuth()

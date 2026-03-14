@@ -1,7 +1,7 @@
 // routes/ProtectedRoutes.tsx
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/useAuth";
-import SplashScreen from "../components/FullScreenLoader";
+import { useAuth } from "../features/auth/context/useAuth.tsx";
+import SplashScreen from "../components/loader/FullScreenLoader.tsx";
 
 export default function ProtectedRoutes({
   children,
