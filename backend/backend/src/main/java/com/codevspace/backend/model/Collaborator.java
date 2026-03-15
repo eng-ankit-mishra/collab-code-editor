@@ -8,7 +8,6 @@ import java.util.Date;
 
 @Data
 @Builder
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class Collaborator {
