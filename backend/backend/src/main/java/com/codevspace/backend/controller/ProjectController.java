@@ -27,11 +27,11 @@ public class ProjectController {
         return ResponseEntity.ok().body(project);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Project>> getMyProjects(@AuthenticationPrincipal User currentUser) {
-        List<Project> list= projectService.getProject(currentUser.getId());
-        return ResponseEntity.ok().body(list);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Project>> getMyProjects(@AuthenticationPrincipal User currentUser) {
+//        List<Project> list= projectService.getProject(currentUser.getId());
+//        return ResponseEntity.ok().body(list);
+//    }
 
     @PostMapping("{projectId}/collaborators")
     public ResponseEntity<Project> addCollaborator(@PathVariable String projectId, @RequestBody InviteCollaboratorRequest request, @AuthenticationPrincipal User currentUser ) {
