@@ -1,0 +1,31 @@
+name: Deploy CodevSpace Backend to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Connected to EC2 server."
+            cd backend/backend
+            
+            echo "pulling latest code from Github..."
+            git pull origin main
+            
+            echo "Rebuilding and restarting Docker Containers"
+            sudo docker-compose up -d --build
+            
+            echo "Deployment Successful! "
+            
