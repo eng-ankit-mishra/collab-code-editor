@@ -1,8 +1,6 @@
 package com.codevspace.backend.controller;
 
-import com.codevspace.backend.dto.AuthenticationRequest;
-import com.codevspace.backend.dto.AuthenticationResponse;
-import com.codevspace.backend.dto.RegisterRequest;
+import com.codevspace.backend.dto.*;
 import com.codevspace.backend.service.AuthenticationService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +24,17 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String>  forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        authenticationService.processForgotPassword(forgotPasswordRequest);
+        return ResponseEntity.ok("If an account with that email exists, a reset link has been sent.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String>  resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        authenticationService.processResetPassword(resetPasswordRequest);
+        return ResponseEntity.ok("Password has been successfully reset. You can now log in.");
     }
 }
