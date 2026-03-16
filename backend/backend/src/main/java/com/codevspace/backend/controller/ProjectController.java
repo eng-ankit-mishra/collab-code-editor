@@ -33,14 +33,14 @@ public class ProjectController {
 //        return ResponseEntity.ok().body(list);
 //    }
 
-    @PostMapping("/{projectId}/collaborators")
-    public ResponseEntity<Project> addCollaborator(@PathVariable String projectId, @RequestBody InviteCollaboratorRequest request, @AuthenticationPrincipal User currentUser ) {
-        Project project=projectService.addCollaborator(projectId,request,currentUser);
-        return ResponseEntity.ok().body(project);
-    }
+//    @PostMapping("/{projectId}/collaborators")
+//    public ResponseEntity<Project> addCollaborator(@PathVariable String projectId, @RequestBody InviteCollaboratorRequest request, @AuthenticationPrincipal User currentUser ) {
+//        Project project=projectService.addCollaborator(projectId,request,currentUser);
+//        return ResponseEntity.ok().body(project);
+//    }
 
     @GetMapping
-    public ResponseEntity<List<ProjectDashboardResponse>> getProjects(@AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<List<ProjectDashboardResponse>> getAllProjects(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok().body(projectService.getDashboardProjects(currentUser.getId()));
     }
 
@@ -75,7 +75,7 @@ public class ProjectController {
     }
 
     @PostMapping("{projectId}/invitations/respond")
-    public ResponseEntity<String> respondToProject(@PathVariable String projectId,@AuthenticationPrincipal User currentUser,@RequestBody RespondInvitationRequest request){
+    public ResponseEntity<String> respondToInvitation(@PathVariable String projectId,@AuthenticationPrincipal User currentUser,@RequestBody RespondInvitationRequest request){
     projectService.respondToInvitation(projectId, currentUser.getId(), request.isAccept());
         String message = request.isAccept() ? "Invitation accepted!" : "Invitation rejected.";
         return ResponseEntity.ok(message);
