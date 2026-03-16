@@ -33,7 +33,7 @@ public class ProjectController {
 //        return ResponseEntity.ok().body(list);
 //    }
 
-    @PostMapping("{projectId}/collaborators")
+    @PostMapping("/{projectId}/collaborators")
     public ResponseEntity<Project> addCollaborator(@PathVariable String projectId, @RequestBody InviteCollaboratorRequest request, @AuthenticationPrincipal User currentUser ) {
         Project project=projectService.addCollaborator(projectId,request,currentUser);
         return ResponseEntity.ok().body(project);
@@ -44,18 +44,41 @@ public class ProjectController {
         return ResponseEntity.ok().body(projectService.getDashboardProjects(currentUser.getId()));
     }
 
-    @PatchMapping("{projectId}/code")
+    @PatchMapping("/{projectId}/code")
     public ResponseEntity<Void> saveCode(@PathVariable String projectId, @RequestBody CodeSaveRequest request, @AuthenticationPrincipal User currentUser) {
         projectService.saveCode(projectId,request.getCodeContent(),currentUser);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("{projectId}/execute")
+    @PostMapping("/{projectId}/execute")
     public ResponseEntity<CodeExecutionResponse> executeCode(@PathVariable String projectId,@RequestBody CodeExecutionRequest request,@AuthenticationPrincipal User currentUser){
 
 
         CodeExecutionResponse response=codeExecutionService.executeCode(request);
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/{projectId}/invite")
+    public ResponseEntity<String> inviteUser(
+            @PathVariable String projectId,
+            @RequestBody InviteCollaboratorRequest request,
+            @AuthenticationPrincipal User currentUser
+    ){
+        projectService.inviteCollaborator(projectId,request,currentUser);
+        return ResponseEntity.ok("Invitation Send Successfully");
+    }
+
+    @GetMapping("/invitations")
+    public ResponseEntity<List<InvitationResponse>> getAllInvitations(@AuthenticationPrincipal User currentUser){
+        List<InvitationResponse> invitations=projectService.getMyInvitation(currentUser.getId());
+        return ResponseEntity.ok().body(invitations);
+    }
+
+    @PostMapping("{projectId}/invitations/respond")
+    public ResponseEntity<String> respondToProject(@PathVariable String projectId,@AuthenticationPrincipal User currentUser,@RequestBody RespondInvitationRequest request){
+    projectService.respondToInvitation(projectId, currentUser.getId(), request.isAccept());
+        String message = request.isAccept() ? "Invitation accepted!" : "Invitation rejected.";
+        return ResponseEntity.ok(message);
     }
 
 
