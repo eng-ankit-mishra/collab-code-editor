@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "Connected to EC2 server."
-            cd backend/backend
+            cd ~/collab-code-editor/backend/backend
             
             echo "pulling latest code from Github..."
             git pull origin main
