@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,6 +38,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**","/oauth2/**","/login/**","/ws/**","/api/contact/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -54,7 +56,7 @@ public class SecurityConfig {
 
         String allowedOrigins=frontendUrl.replace("/oauth2/redirect","");
 
-        configuration.setAllowedOrigins(List.of(allowedOrigins,"https://codevspace.netlify.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173",allowedOrigins,"https://codevspace.netlify.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
