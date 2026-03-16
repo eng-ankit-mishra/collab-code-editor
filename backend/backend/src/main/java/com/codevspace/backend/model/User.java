@@ -43,6 +43,9 @@ public class User implements UserDetails {
 
     private boolean isEmailVerified;
 
+    private String resetPasswordToken;
+    private Instant resetPasswordTokenExpiry;
+
     @CreatedDate
     private Instant createdAt;
 
