@@ -41,8 +41,14 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public List<Project> getProject(String userId){
+    public List<Project> getProjects(String userId){
         return projectRepository.findByCollaboratorsUserId(userId);
+    }
+
+    public Project getProjectById(String projectId){
+
+        return projectRepository.findById(projectId)
+                .orElseThrow(()->new IllegalArgumentException("Project not found!"));
     }
 
     public Project addCollaborator(String projectId, InviteCollaboratorRequest request,User currentUser){

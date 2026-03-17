@@ -29,7 +29,7 @@ public class ProjectController {
 
 //    @GetMapping
 //    public ResponseEntity<List<Project>> getMyProjects(@AuthenticationPrincipal User currentUser) {
-//        List<Project> list= projectService.getProject(currentUser.getId());
+//        List<Project> list= projectService.getProjects(currentUser.getId());
 //        return ResponseEntity.ok().body(list);
 //    }
 
@@ -39,10 +39,17 @@ public class ProjectController {
 //        return ResponseEntity.ok().body(project);
 //    }
 
+
     @GetMapping
     public ResponseEntity<List<ProjectDashboardResponse>> getAllProjects(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok().body(projectService.getDashboardProjects(currentUser.getId()));
     }
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<Project> getProjectById(@PathVariable String projectId) {
+        return ResponseEntity.ok().body(projectService.getProjectById(projectId));
+    }
+
 
     @PatchMapping("/{projectId}/code")
     public ResponseEntity<Void> saveCode(@PathVariable String projectId, @RequestBody CodeSaveRequest request, @AuthenticationPrincipal User currentUser) {
