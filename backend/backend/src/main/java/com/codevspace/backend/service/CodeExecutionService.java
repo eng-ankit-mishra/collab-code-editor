@@ -22,7 +22,7 @@ public class CodeExecutionService {
 
         Map<String,Object> payload=new HashMap<>();
         payload.put("source_code",request.getSourceCode());
-        payload.put("language_id",request.getLanguageId());
+        payload.put("language_id",request.getLanguage().getId());
 
         if(request.getStdin()!=null &&  !request.getStdin().trim().isEmpty()){
             payload.put("stdin",request.getStdin());
