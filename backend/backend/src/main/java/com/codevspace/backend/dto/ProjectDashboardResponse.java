@@ -1,5 +1,6 @@
 package com.codevspace.backend.dto;
 
+import com.codevspace.backend.model.Language;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.time.Instant;
 public class ProjectDashboardResponse {
     private String Id;
     private String name;
-    private String language;
+    private Language language;
 
     private String permission;
     private String ownershipStatus;

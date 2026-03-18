@@ -27,7 +27,7 @@ public class Project {
 
     private String description;
 
-    private String language;
+    private Language language;
 
     private String codeContent;
 
