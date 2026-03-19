@@ -1,113 +1,53 @@
 import NavBar from "../../../components/layout/NavBar.tsx";
 import { useState, useEffect } from "react";
 import Modals from "../components/Modals.tsx";
-import type { ProjectDetails } from "../../../types/Types.ts";
-import axios from "axios";
+import type { ProjectDetails,DashboardProjects } from "../../../types/Types.ts";
 import { useAuth } from "../../auth/context/useAuth.tsx";
 import Menu from "../../../components/layout/Menu.tsx";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Outlet} from "react-router-dom";
+
 import SplashScreen from "../../../components/loader/PageScreenLoader.tsx";
+// @ts-ignore
+import projectService from "../../../services/projectService.js"
 
 export default function Dashboard() {
   const [showModals, setShowModals] = useState(false);
-  const [project, setProject] = useState<ProjectDetails[]>([]);
+  const [projects, setProjects] = useState<DashboardProjects[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { session } = useAuth();
-  const accessToken = session?.access_token;
 
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  /* =========================
-     TOAST HANDLING
-     ========================= */
   useEffect(() => {
-    const toastType = location.state?.showToast;
-    if (!toastType) return;
-
-    const messages: Record<string, string> = {
-      SignIn: "Successfully Logged in!",
-      SignUp: "Successfully Signed up!",
-      PasswordChanged: "Successfully Changed Password!",
-    };
-
-    toast.success(messages[toastType]);
-    navigate(location.pathname, { replace: true });
-  }, [location, navigate]);
-
-  /* =========================
-     FETCH PROJECTS
-     ========================= */
-  useEffect(() => {
-    if (!accessToken) return;
+    if (!session) return;
 
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          "https://codevspace-aqhw.onrender.com/api/projects",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch projects");
-        }
-
-        const data = await res.json();
-        setProject(Array.isArray(data) ? data : []);
+        const data = await projectService.getAllProject()
+        console.log(data)
+        setProjects(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Fetch failed:", err);
-        setProject([]);
+        setProjects([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProjects();
-  }, [accessToken]);
+    void fetchProjects();
+  }, [session]);
 
-  /* =========================
-     CREATE PROJECT
-     ========================= */
   async function handleCreate(project: ProjectDetails) {
     try {
-      const response = await axios.post(
-        "https://codevspace-aqhw.onrender.com/api/projects",
-        project,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      const newProject = response.data;
-      setProject((prev) => [...prev, newProject]);
-      return newProject._id;
+      const data = await projectService.createProject(project)
+      console.log(data)
+      setProjects((prev) => [...prev, data]);
+      return data.id;
     } catch (err) {
       console.error("Create project failed:", err);
+      throw err;
     }
-  }
-
-  /* =========================
-     UI HELPERS
-     ========================= */
-  function handleDelete(_id: string) {
-    setProject((prev) => prev.filter((p) => p._id !== _id));
-  }
-
-  function handleRename(_id: string | undefined, projectName: string) {
-    setProject((prev) =>
-      prev.map((p) =>
-        p._id === _id ? { ...p, projectName } : p
-      )
-    );
   }
 
   return (
@@ -124,11 +64,10 @@ export default function Dashboard() {
     <>
       <Outlet
         context={{
-          project,
+          projects,
           loading,
           setShowModals,
-          handleDelete,
-          handleRename,
+          setProjects
         }}
       />
     </>
