@@ -1,7 +1,8 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import Button from "../../../components/ui/Button.tsx";
-import { useAuth } from "../../auth/context/useAuth.tsx";
+// @ts-ignore
+import projectService from "../../../services/projectService";
 
 interface ShareModalProps {
   roomId: string;
@@ -13,7 +14,6 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [permission, setPermission] = useState<"view" | "edit">("view");
-  const { session } = useAuth();
 
 
   /* ---------- ESC CLOSE ---------- */
@@ -39,29 +39,8 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
     setLoading(true);
     setError(null);
 
-    const res = await fetch(
-      `https://codevspace-aqhw.onrender.com/api/projects/${roomId}/invite`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({
-          email,
-          role, // ✅ CORRECT FIELD
-        }),
-      }
-    );
+    await projectService.inviteUser(roomId,email,role)
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Invite failed");
-    }
-
-    console.log(data);
-    // ✅ UX success
     setEmail("");
     setPermission("view");
   
