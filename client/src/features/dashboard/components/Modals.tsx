@@ -1,21 +1,19 @@
 import Button from "../../../components/ui/Button.tsx";
 import { PlusCircle, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {useState, useEffect, type FormEvent} from "react";
 import { getRuntimes } from "../../../utils/languages.ts";
-import type { Language, ModalProps, ProjectDetails } from "../../../types/Types.ts"; // Combined imports
+import type { Language, ModalProps, ProjectDetails } from "../../../types/Types.ts";
 
 export default function Modals({ setShowModals, create }: ModalProps) {
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
-  
-  // 1. Added TypeScript types to State
+
   const [languages, setLanguages] = useState<Language[]>([]);
   const [lang, setLang] = useState<Language | null>(null); 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // 2. Set the default language ONLY after the data successfully loads
     getRuntimes().then((data) => {
       setLanguages(data);
       if (data.length > 0) {
@@ -31,37 +29,33 @@ export default function Modals({ setShowModals, create }: ModalProps) {
     }
   }, [isError]);
 
-  async function actionFunction(formData: FormData) {
+  async function handleSubmit(e:FormEvent<HTMLFormElement>) {
+      e.preventDefault();
     setLoading(true);
 
-    const rawName = formData.get("project");
-    const projectName = typeof rawName === "string" ? rawName.trim() : "";
+    const formData=new FormData(e.currentTarget)
 
-    // 3. Prevent submission if data hasn't loaded or input is empty
-    if (!projectName || !lang) {
+    const name = formData.get("project") as string
+      const description=formData.get("description") as string
+
+    if (!name || !lang) {
       setIsError(true);
       setLoading(false);
       return;
     }
 
     const projectObj: ProjectDetails = {
-      projectName,
-      code: "",
-      template: {
-        id: lang.id,
-        name: lang.name,
-        alias: lang.alias,
-        boilerplate: lang.boilerplate,
-      },
+      name,
+      description,
+      language:lang,
+      codeContent:lang.boilerplate
     };
 
     try {
-      const newId = await create(projectObj);
-
-      if (newId) {
-        navigate(`/editor/${newId}`, {
-          state: { projectObject: { ...projectObj, _id: newId } },
-        });
+      const projectId = await create(projectObj);
+      console.log(projectId);
+      if (projectId) {
+        navigate(`/editor/${projectId}`)
         setShowModals(false);
       } else {
         setIsError(true);
@@ -90,11 +84,7 @@ export default function Modals({ setShowModals, create }: ModalProps) {
 
         <form
           className="space-y-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            actionFunction(formData);
-          }}
+          onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-1.5">
             <h2 className="text-2xl font-semibold mb-4">Create New Project</h2>
@@ -112,13 +102,25 @@ export default function Modals({ setShowModals, create }: ModalProps) {
               required
               disabled={loading}
             />
+              <label htmlFor="description" className="block ">
+                  Enter Project Description
+              </label>
+              <input
+                  id="description"
+                  name="description"
+                  type="text"
+                  autoComplete="off"
+                  placeholder="Project Description"
+                  className="py-1 px-3 bg-gray-900 text-white placeholder-gray-400 border border-white/20 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all duration-200"
+                  disabled={loading}
+              />
+
 
             <label htmlFor="template" className="block  mt-5">
               Select Template
             </label>
 
             <div className="grid grid-cols-3 gap-12 gap-x-16 py-8 p-6">
-              {/* 4. Fixed typo: mapped over 'languages' instead of 'language' */}
               {languages.map((item) => {
                 const Icon = item.icon;
 
@@ -129,7 +131,7 @@ export default function Modals({ setShowModals, create }: ModalProps) {
                         onClick={() => handleLangChange(item)}
                         className={`p-2 rounded cursor-pointer border transition-all duration-200
                       ${
-                        // 5. Added optional chaining (lang?.name) to prevent crashes while loading
+                        
                         lang?.name === item.name
                           ? "border-blue-400 bg-blue-900/30 shadow-[0_0_0_2px_#3b82f6]"
                           : "hover:bg-neutral-800 border-white/20"
@@ -141,7 +143,7 @@ export default function Modals({ setShowModals, create }: ModalProps) {
                     </div>
                   );
                 }
-                return null; // Added fallback return for map function
+                return null;
               })}
             </div>
           </div>
