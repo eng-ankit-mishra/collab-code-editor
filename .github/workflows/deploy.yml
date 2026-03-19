@@ -25,6 +25,8 @@ jobs:
             
             echo "Hard resetting to match origin/main perfectly..."
             git reset --hard origin/main
+
+            sudo docker-compose down
             
             echo "Rebuilding and restarting Docker Containers"
             sudo docker-compose up -d --build
