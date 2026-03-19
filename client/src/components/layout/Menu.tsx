@@ -8,15 +8,12 @@ import {
   Bell,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../../features/auth/context/useAuth.tsx";
 import { useState, useEffect } from "react";
 import Button from "../ui/Button.tsx";
 import Avatar from "../ui/Avatar.tsx";
 import type { MenuProps } from "../../types/Types.ts";
+import {useAuth} from "../../features/auth/context/useAuth.tsx"
 
-/* ===============================
-   NAV ITEM STYLE (DRY)
-   =============================== */
 const navItem =
   "w-full px-6.5 py-2 rounded flex items-center gap-2 transition hover:bg-neutral-800";
 
@@ -26,33 +23,27 @@ const navItemActive =
 export default function Menu({ setShowModals }: MenuProps) {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const {logout,userDetail}=useAuth();
+
 
   const navigate = useNavigate();
-  const { signOutUser, session } = useAuth();
 
-  /* ---------- USER INFO ---------- */
-  const userName =
-    session?.user?.user_metadata?.full_name ||
-    session?.user?.email?.split("@")[0] ||
-    "User";
+  const userName = userDetail?.name ;
 
-  const userEmail = session?.user?.email || "";
+  const userEmail =userDetail?.email ;
 
-  /* ---------- AUTO CLEAR ERROR ---------- */
+
   useEffect(() => {
     if (!error) return;
     const timer = setTimeout(() => setError(undefined), 4000);
     return () => clearTimeout(timer);
   }, [error]);
 
-  /* ---------- SIGN OUT ---------- */
+
   async function handleSignOut() {
     try {
       setLoading(true);
-      const res = await signOutUser();
-      if (!res?.success) {
-        throw new Error(res?.error || "Sign out failed");
-      }
+      logout();
       navigate("/");
     } catch (err: any) {
       console.error(err);
@@ -139,7 +130,7 @@ export default function Menu({ setShowModals }: MenuProps) {
           onClick={() => navigate("/dashboard/settings")}
           className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-neutral-800 transition"
         >
-          <Avatar name={userName} />
+          <Avatar name={userName || "User"} />
 
           <div className="flex flex-col overflow-hidden">
             <span className="text-sm font-medium text-white truncate">
