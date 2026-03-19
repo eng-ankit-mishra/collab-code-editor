@@ -11,10 +11,10 @@ type OutputProps = {
   bgClass: string;
   isLoading: boolean;
   roomId?: string;
-  accessRole: "OWNER" | "EDITOR" | "VIEWER";
+  accessRole?: "OWNER" | "EDITOR" | "VIEWER";
 };
 
-export default function Output({
+export default function ExecutionPanel({
   onClick,
   output,
   input,
@@ -22,9 +22,7 @@ export default function Output({
   bgClass,
   isLoading,
   roomId,
-  accessRole,
 }: OutputProps): JSX.Element {
-  const canExecute = accessRole === "OWNER" || accessRole === "EDITOR";
 
   return (
     <main className="w-[34rem] h-full pt-3 p-4 flex flex-col gap-2">
@@ -32,7 +30,7 @@ export default function Output({
       <Button
         className="h-8 px-3 w-18"
         onClick={onClick}
-        disabled={isLoading || !canExecute}
+        disabled={isLoading}
       >
         {isLoading ? (
           <div className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
@@ -52,11 +50,10 @@ export default function Output({
         <textarea
           className="w-full h-auto pt-2 bg-transparent text-white outline-none resize-none whitespace-pre-wrap"
           placeholder={
-            canExecute ? "Write input here" : "View-only access"
+            "Write input here"
           }
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          readOnly={!canExecute}
         />
       </div>
 
@@ -70,7 +67,6 @@ export default function Output({
         </pre>
       </div>
 
-      {/* CHAT (allowed for all roles) */}
       <Chat roomId={roomId} />
     </main>
   );
