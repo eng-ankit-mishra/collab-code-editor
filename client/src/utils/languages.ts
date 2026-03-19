@@ -12,7 +12,6 @@ import {
 } from "react-icons/si";
 
 
-/* 🔒 Hardcoded correct aliases for Piston */
 const ALIAS_MAP: Record<string, string> = {
   java: "java",
   "c++": "cpp",
@@ -84,7 +83,7 @@ const lang = [
 
 export async function getRuntimes(): Promise<Language[]> {
   try {
-    const res = await fetch("/api/languages");
+    const res = await fetch("http://3.110.31.131:2358/languages");
     const data = await res.json();
     
     const finalLanguages: Language[] = [];
