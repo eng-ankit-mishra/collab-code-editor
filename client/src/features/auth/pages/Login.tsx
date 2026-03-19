@@ -3,13 +3,16 @@ import { FcGoogle } from "react-icons/fc";
 import { SiGithub } from "react-icons/si";
 import Button from "../../../components/ui/Button.tsx";
 import Input from "../../../components/ui/Input.tsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { useState, type FormEvent, useEffect } from "react";
 import { useAuth } from "../context/useAuth.tsx";
+// @ts-ignore
+import authService from "../../../services/authService.js"
 
 export default function LogIn() {
-  const { signInUser, signInWithGithub, signInWithGoogle } = useAuth();
+  const { login} = useAuth();
   const navigate = useNavigate();
+
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,7 +24,6 @@ export default function LogIn() {
     }
   }, [error]);
 
-  /* ---------- EMAIL / PASSWORD LOGIN ---------- */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -31,12 +33,10 @@ export default function LogIn() {
     const password = formData.get("password") as string;
 
     try {
-      const { success, data, error } = await signInUser(email, password);
+      const data = await authService.authenticate(email, password);
+      const token=data.token
 
-      if (!success || !data?.session?.user?.id) {
-        setError(error || "Login failed");
-        return;
-      }
+      login(token);
 
       navigate("/dashboard", {
         replace: true,
@@ -50,11 +50,10 @@ export default function LogIn() {
     }
   };
 
-  /* ---------- GOOGLE OAUTH ---------- */
   const handleGoogleClick = async () => {
     try {
       setLoading(true);
-      await signInWithGoogle(); // 🔥 redirect happens here
+      window.location.href = "http://13.127.234.216.nip.io:8080/oauth2/authorization/google";
     } catch (err) {
       console.error(err);
       setError("Google login failed.");
@@ -62,11 +61,10 @@ export default function LogIn() {
     }
   };
 
-  /* ---------- GITHUB OAUTH ---------- */
   const handleGithubClick = async () => {
     try {
       setLoading(true);
-      await signInWithGithub(); // 🔥 redirect happens here
+      window.location.href = "http://13.127.234.216:8080/oauth2/authorization/github";
     } catch (err) {
       console.error(err);
       setError("GitHub login failed.");
@@ -115,7 +113,7 @@ export default function LogIn() {
           )}
 
           <Link
-            to="/reset-password"
+            to="/forgot-password"
             className="text-blue-500 text-sm underline block text-center mt-4"
           >
             Forgot Password?
