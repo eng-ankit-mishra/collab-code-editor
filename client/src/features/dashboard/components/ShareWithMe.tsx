@@ -1,63 +1,27 @@
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState} from "react";
 import { useAuth } from "../../auth/context/useAuth.tsx";
 import { useNavigate } from "react-router-dom";
 import SplashScreen from "../../../components/loader/PageScreenLoader.tsx";
-import { Code, User, Clock, Ellipsis,Eye,Pencil} from "lucide-react";
+import { Code, User, Clock,Eye,Pencil} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import type { Language } from "../../../types/Types.ts";
+import type {DashboardProjects} from "../../../types/Types.ts";
+// @ts-ignore
+import projectService from "../../../services/projectService";
 
 
-/* ---------- TYPES ---------- */
-type SharedProject = {
-  _id: string;               // projectId
-  projectName: string;
-  ownerName:string;
-  role: "VIEWER" | "EDITOR";
-  updatedAt: string;
-  template: Language
-};
+
 
 export default function SharedWithMe() {
   const { session } = useAuth();
-  const accessToken=session?.access_token
   const navigate = useNavigate();
 
-  const [projects, setProjects] = useState<SharedProject[]>([]);
+  const [projects, setProjects] = useState<DashboardProjects[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showOptionId, setShowOptionId] = useState<string>();
-
-  const cardDropDownRef = useRef<HTMLDivElement>(null);
-  
-    /* ---------- CLOSE DROPDOWN ---------- */
-    useEffect(() => {
-      function handleOutside(e: MouseEvent) {
-        if (cardDropDownRef.current && !cardDropDownRef.current.contains(e.target as Node)) {
-          setShowOptionId(undefined);
-        }
-      }
-  
-      function handleEsc(e: KeyboardEvent) {
-        if (e.key === "Escape") {
-          setShowOptionId(undefined);
-        }
-      }
-  
-      document.addEventListener("mousedown", handleOutside);
-      document.addEventListener("keydown", handleEsc);
-  
-      return () => {
-        document.removeEventListener("mousedown", handleOutside);
-        document.removeEventListener("keydown", handleEsc);
-      };
-    }, []);
 
   /* ---------- FETCH SHARED PROJECTS ---------- */
   useEffect(() => {
-    // If auth is still resolving
     if (session === undefined) return;
-
-    // If not logged in
     if (!session) {
       setLoading(false);
       return;
@@ -65,22 +29,7 @@ export default function SharedWithMe() {
 
     async function fetchSharedProjects() {
       try {
-        const res = await fetch(
-          "https://codevspace-aqhw.onrender.com/api/projects/shared-with-me",
-          {
-            headers: {
-              Authorization: `Bearer ${session?.access_token}`,
-            },
-          }
-        );
-
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.message || "Failed to load projects");
-        }
-
-        const data: SharedProject[] = await res.json();
-        console.log(data);
+        const data = await projectService.sharedProject();
         setProjects(data);
       } catch (err: any) {
         console.error("❌ Failed to fetch shared projects:", err);
@@ -90,40 +39,9 @@ export default function SharedWithMe() {
       }
     }
 
-    fetchSharedProjects();
+    void fetchSharedProjects();
   }, [session]);
 
-  async function handleDelete(projectId?: string) {
-  if (!projectId || !accessToken || !session?.user?.id) return;
-
-  try {
-    const res = await fetch(
-      `https://codevspace-aqhw.onrender.com/api/projects/${projectId}/collaborators/${session.user.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || "Failed to leave project");
-    }
-
-    // ✅ Optimistic UI update
-    setProjects(prev => prev.filter(p => p._id !== projectId));
-    setShowOptionId(undefined);
-
-    console.log("✅ Left project successfully");
-  } catch (err) {
-    console.error("❌ Leave project failed:", err);
-  }
-}
-
-
-  /* ---------- UI STATES ---------- */
 
   if (loading) return <SplashScreen />;
 
@@ -164,60 +82,32 @@ export default function SharedWithMe() {
       
       {projects.map((project) => (
         <div
-          key={project._id}
+          key={project.id}
           className="p-4 w-68 h-44 bg-gray-700/30 border cursor-pointer border-white/10 shadow-md hover:scale-[1.02] hover:shadow-xl transition-all duration-300 rounded-md flex flex-col text-sm text-zinc-400"
           onClick={() =>
-              navigate(`/editor/${project._id}`, {
-                state: { accessRole: project.role },
-              })
+              navigate(`/editor/${project.id}`)
             }
         >
           {/* Project name */}
           <div className="relative flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">
-            {project.projectName}
+            {project.name}
           </h3>
-          <button
-              className="text-gray-400 hover:text-white"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowOptionId((prev) => (prev === project._id ? undefined : project._id));
-              }}
-            >
-              <Ellipsis size={16} />
-            </button>
-            {showOptionId === project._id && (
-              <div
-                ref={cardDropDownRef}
-                className="absolute left-45 top-full mt-1 bg-neutral-900 rounded shadow"
-              >
-                <ul className="p-2">
-                  <li
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(project._id);
-                    }}
-                    className="text-gray-300  hover:bg-gray-800 text-sm px-3 py-1 rounded cursor-pointer"
-                  >
-                    Delete
-                  </li>
-                </ul>
-              </div>
-            )}
+
             </div>
 
           <div className="space-y-1 pt-2 mb-4 mt-1">
             <p className="flex gap-2 items-center">
               <Code size={14}/> 
-              <span>Language: {project.template.name}</span>  
+              <span>Language: {project.language.name}</span>
             </p>
           {/* Role */}
             <p className="mt-1">
-              {project.role === "EDITOR" ? <span className="flex gap-2 items-center"><Pencil size={14}/>Permission: Can edit</span> : <span className="flex gap-2 items-center" ><Eye size={14}/>Permission: Can view</span>}     
+              {project.permission === "EDITOR" ? <span className="flex gap-2 items-center"><Pencil size={14}/>Permission: Can edit</span> : <span className="flex gap-2 items-center" ><Eye size={14}/>Permission: Can view</span>}
             </p>
             <p className="flex gap-2  items-center mt-1">
               <User size={14}/>
-              <span>Created by {project.ownerName?.split(" ")[0]}</span>     
+              <span>Created by {project.ownershipStatus}</span>
             </p>
           </div>
           
