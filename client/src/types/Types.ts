@@ -69,16 +69,14 @@ export type AuthContextType = {
   login:(email:string)=>void;
   logout: () => void;
   userDetail:UserDetail | null;
-  globalLoading?:boolean;
-  setGlobalLoading?:(loading:boolean) => void;
 };
 
 export type MenuProps={
   setShowModals:(val:boolean)=>void
 }
-export type AvatarProps={
-  name:string | undefined
-}
+// export type AvatarProps={
+//   name:string | undefined
+// }
 
 export type Invitation = {
   projectId: string;
