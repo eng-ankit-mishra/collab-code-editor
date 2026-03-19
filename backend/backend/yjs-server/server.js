@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const WebSocket = require("ws");
 const http = require("http");
 const jwt = require("jsonwebtoken");
@@ -25,13 +27,15 @@ server.on("upgrade", (request, socket, head) => {
     }
 
     try {
-        jwt.verify(token, JWT_SECRET);
+        const secretKey = Buffer.from(JWT_SECRET, 'base64');
+        jwt.verify(token, secretKey);
 
         wss.handleUpgrade(request, socket, head, (ws) => {
             wss.emit("connection", ws, request);
         });
 
     } catch (err) {
+        console.error("JWT Verification Failed:", err.message);
         socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
         socket.destroy();
     }
