@@ -1,14 +1,14 @@
 import Button from "../../../components/ui/Button.tsx";
 import Input from "../../../components/ui/Input.tsx";
 import { useState } from "react";
-import { useAuth } from "../context/useAuth.tsx";
+// @ts-ignore
+import authService from "../../../services/authService";
 
-export default function ResetPassword({
+export default function ForgotPassword({
   onClose,
 }: {
   onClose?: () => void;
 }) {
-  const { resetPassword } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,22 +33,10 @@ export default function ResetPassword({
       return;
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError("Please enter a valid email address.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const result = await resetPassword(email);
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to send reset email.");
-      }
+       await authService.forgotPassword(email);
 
       setSuccess(true);
-
-      // ✅ auto-close modal after success (UX)
       if (onClose) {
         setTimeout(() => onClose(), 2000);
       }
