@@ -15,13 +15,13 @@ import { useState,useEffect,useRef } from 'react';
 
 
 export default function NavBar({ authRequired = false,shareRequired=false,projectName=""}:NavbarProp) {
-  const {id:roomId}=useParams()
+  const {projectId:roomId}=useParams()
   const [isOpen,setIsOpen]=useState(false)
-  const {session,signOutUser}=useAuth()
+  const {session,userDetail,logout}=useAuth()
   const [loading,setLoading]=useState(false);
   const [showModals,setShowModals]=useState(false)
-  const userId=session?.user?.email?.split("@")[0]
-  const userName=session?.user?.user_metadata?.full_name
+  const userId=userDetail?.email?.split("@")[0]
+  const userName=userDetail?.name
   const navigate=useNavigate()
 
   const dropDownRef=useRef<HTMLDivElement>(null)
@@ -52,13 +52,8 @@ export default function NavBar({ authRequired = false,shareRequired=false,projec
     async function handleSignOut(){
       setLoading(true);
     try{
-      const data =await signOutUser()
-      if(!data?.success){
-        throw new Error(data.error)
-      }
-      else{
+      logout()
         navigate("/")
-      }
     }catch (err){ 
       console.log(err)
     }finally{
