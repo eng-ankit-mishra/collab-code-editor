@@ -7,9 +7,11 @@ import { Link} from "react-router-dom";
 import { useAuth } from "../context/useAuth.tsx";
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
+// @ts-ignore
+import authService from "../../../services/authService";
 
 export default function SignUp() {
-  const { signUpUser, signInWithGithub, signInWithGoogle } = useAuth();
+  const {login} = useAuth();
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -23,7 +25,6 @@ export default function SignUp() {
     }
   }, [error]);
 
-  /* ---------- EMAIL / PASSWORD SIGN UP ---------- */
   async function handleSignUp(e: FormEvent<HTMLFormElement>) {
   e.preventDefault();
   if (loading) return;
@@ -38,21 +39,11 @@ export default function SignUp() {
   const password = formData.get("password") as string;
 
   try {
-    const { success: ok, error } = await signUpUser(name, email, password);
-
-    if (!ok || error) {
-      setError(error || "Signup failed");
-      setLoading(false);
-      return;
-    }
-
-    // ✅ SUCCESS MESSAGE (GREEN)
+    const data = await authService.register(name, email, password);
+    login(data.token)
     setSuccess(
       "Verification email sent successfully. Please check your inbox."
     );
-
-    // optional redirect after a delay
-   
 
   } catch (err) {
     console.error(err);
@@ -64,11 +55,10 @@ export default function SignUp() {
 
 
 
-  /* ---------- GOOGLE OAUTH ---------- */
   const handleGoogleClick = async () => {
     try {
       setLoading(true);
-      await signInWithGoogle(); // 🔥 redirect happens
+      window.location.href = "http://13.127.234.216:8080/oauth2/authorization/google";
     } catch (err) {
       console.error(err);
       setError("Google signup failed.");
@@ -76,11 +66,10 @@ export default function SignUp() {
     }
   };
 
-  /* ---------- GITHUB OAUTH ---------- */
   const handleGithubClick = async () => {
     try {
       setLoading(true);
-      await signInWithGithub(); // 🔥 redirect happens
+      window.location.href = "http://13.127.234.216:8080/oauth2/authorization/github";
     } catch (err) {
       console.error(err);
       setError("GitHub signup failed.");
