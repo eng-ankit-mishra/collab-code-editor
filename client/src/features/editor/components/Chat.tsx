@@ -1,107 +1,95 @@
 import { useEffect, useRef, useState } from "react";
-import { getSocket } from "../sockets/socket_temp.ts";
 import { IoSend } from "react-icons/io5";
 import { useAuth } from "../../auth/context/useAuth.tsx";
+import type {ChatMessage} from "../../../types/Types.ts"
+// @ts-ignore
+import chatService from "../../../services/chatService.js"
+import {Client} from "@stomp/stompjs";
+// @ts-ignore
+import SockJS from "sockjs-client";
 
-type ChatMessage = {
-  user: string;
-  text: string;
-  time: string;
-  userId: string;
-};
 
 export default function Chat({ roomId }: { roomId?: string }) {
-  const socket = getSocket();
-  const { session } = useAuth();
 
-  const myUserId = session?.user?.id;
-  const myUserName = session?.user?.user_metadata?.name || "Me"; // Fallback name
-
-  /* ✅ FIX PART 1: Create a Ref to track the live User ID 
-     This allows the socket listener to read the current ID 
-     without getting stuck in a "stale closure".
-  */
-  const userIdRef = useRef(myUserId);
-
-  // Keep the ref updated whenever session changes
-  useEffect(() => {
-    userIdRef.current = myUserId;
-  }, [myUserId]);
+  const { session,userDetail } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement | null>(null);
 
-  /* 🔥 LOAD CHAT HISTORY */
-  useEffect(() => {
-    if (!roomId || !session?.access_token) return;
+  const stompClientRef=useRef<Client | null>(null)
 
-    fetch(
-      `https://codevspace-aqhw.onrender.com/api/projects/${roomId}/chat`,
-      {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const history = data.map((m: any) => ({
-          user: m.userName,
-          text: m.text,
-          time: m.createdAt,
-          userId: m.userId,
-        }));
-        setMessages(history);
-      })
-      .catch((err) => console.error("❌ Failed to load chat:", err));
-  }, [roomId, session]);
-
-  /* 🔌 REALTIME MESSAGES */
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleMessage = (msg: ChatMessage) => {
-      /* ✅ FIX PART 2: Compare against userIdRef.current 
-         This ensures we are checking against the actual logged-in ID,
-         even if it loaded asynchronously after the socket connected.
-      */
-      if (userIdRef.current && msg.userId === userIdRef.current) {
-        return; // Ignore my own message (we already added it optimistically)
-      }
-
-      setMessages((prev) => [...prev, msg]);
-    };
-
-    socket.on("chat-message", handleMessage);
-    return () => {
-      socket.off("chat-message", handleMessage);
-    };
-  }, [socket]); // Dependency array is clean now
-
-  /* 🔽 AUTO SCROLL */
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  /* 📤 SEND MESSAGE */
-  function sendMessage() {
-    if (!text.trim() || !roomId || !socket) return;
+  useEffect(() => {
+    if (!roomId) return;
 
-    // 1. Optimistic Update (Show immediately)
-    const optimisticMsg: ChatMessage = {
-      user: myUserName,
-      text: text,
-      time: new Date().toISOString(),
-      userId: myUserId || "temp-id", // Ensure string type
-    };
+    const fetchChats = async () => {
+      try{
+        const data=await chatService.getAllChatHistory(roomId)
+        console.log(data)
+        setMessages(data)
+      }catch (err:any){
+        console.log(err)
+      }
+    }
 
-    setMessages((prev) => [...prev, optimisticMsg]);
-    setText("");
+    void fetchChats()
 
-    // 2. Send to server
-    socket.emit("chat-message", { roomId, text });
+    const client=new Client({
+      webSocketFactory:()=>new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws`),
+      connectHeaders:{
+        Authorization: `Bearer ${session}`
+      },
+      onConnect:()=>{
+        console.log("Connected to chat room" + roomId);
+
+        client.subscribe(`/topic/projects/${roomId}`,(msg)=>{
+          const newChat=JSON.parse(msg.body);
+
+          setMessages(prev=>{
+            if(prev.some(m=>m.id===newChat.id)) return prev;
+            return [...prev,newChat];
+          })
+
+        })
+      },
+      onStompError:(frame)=>{
+        console.log("Broken Error",frame.body);
+    }}
+    );
+
+    client.activate();
+    stompClientRef.current=client;
+
+    return ()=>{
+      client.deactivate();
+    }
+
+  }, [roomId,session]);
+
+
+  async function sendMessage(){
+    if(!text.trim()){
+      return;
+    }
+
+    if(stompClientRef.current && stompClientRef.current.connected){
+      const payload={
+        content:text
+      }
+      stompClientRef.current.publish({
+        destination:`/app/chat/${roomId}/sendMessage`,
+        body: JSON.stringify(payload),
+      })
+      setText("");
+    }else{
+      console.log("Websocket not connected");
+    }
+
   }
-
-  if (!socket) return null;
 
   return (
     <section className="flex flex-col h-[16rem] px-4 py-3 border border-white/10 rounded-xl">
@@ -111,8 +99,7 @@ export default function Chat({ roomId }: { roomId?: string }) {
 
       <div className="flex-1 overflow-y-auto space-y-2">
         {messages.map((m, i) => {
-          // Use the variable directly here for rendering
-          const isMe = m.userId === myUserId;
+          const isMe = m.senderName === userDetail?.name;
 
           return (
             <div
@@ -123,10 +110,10 @@ export default function Chat({ roomId }: { roomId?: string }) {
                   : "mr-auto bg-neutral-800 text-white"
               }`}
             >
-              <div className="text-left break-words">{m.text}</div>
+              <div className="text-left break-words">{m.content}</div>
               <div className="text-left text-xs text-zinc-300 mt-1 ">
-                {isMe ? "You" : m.user} •{" "}
-                {new Date(m.time).toLocaleTimeString([], {
+                {isMe ? "You" : m.senderName} •{" "}
+                {new Date(m.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: true,
