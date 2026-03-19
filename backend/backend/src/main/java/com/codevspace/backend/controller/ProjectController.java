@@ -45,6 +45,11 @@ public class ProjectController {
         return ResponseEntity.ok().body(projectService.getDashboardProjects(currentUser.getId()));
     }
 
+    @GetMapping("/shared")
+    public ResponseEntity<List<ProjectDashboardResponse>> getSharedProjects(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok().body(projectService.getSharedProjects(currentUser.getId()));
+    }
+
     @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProjectById(@PathVariable String projectId) {
         return ResponseEntity.ok().body(projectService.getProjectById(projectId));

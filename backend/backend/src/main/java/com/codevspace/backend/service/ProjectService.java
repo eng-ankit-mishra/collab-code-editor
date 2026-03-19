@@ -95,7 +95,31 @@ public class ProjectService {
             String ownershipStatus=userCollab.getRole()==ProjectRole.OWNER ? "Created by You" : "Shared with You";
 
             return ProjectDashboardResponse.builder()
-                    .Id(project.getId())
+                    .id(project.getId())
+                    .name(project.getName())
+                    .language(project.getLanguage())
+                    .permission(permissionText)
+                    .ownershipStatus(ownershipStatus)
+                    .updatedAt(project.getUpdatedAt())
+                    .build();
+
+        }).collect(Collectors.toList());
+    }
+
+    public List<ProjectDashboardResponse> getSharedProjects(String userId){
+        List<Project> projects=projectRepository.findByCollaboratorsUserId(userId);
+
+        return projects.stream().filter(project -> project.getCollaborators().stream()
+                .anyMatch(c -> c.getUserId().equals(userId) && c.getStatus() == CollaboratorStatus.ACCEPTED && c.getRole()!=ProjectRole.OWNER)).map(project->{
+            Collaborator userCollab=project.getCollaborators().stream()
+                    .filter(c->c.getUserId().equals(userId))
+                    .findFirst()
+                    .orElseThrow();
+            String permissionText=userCollab.getRole().name().charAt(0) + userCollab.getRole().name().substring(1).toLowerCase();
+            String ownershipStatus=userCollab.getRole()==ProjectRole.OWNER ? "Created by You" : "Shared with You";
+
+            return ProjectDashboardResponse.builder()
+                    .id(project.getId())
                     .name(project.getName())
                     .language(project.getLanguage())
                     .permission(permissionText)
@@ -156,7 +180,7 @@ public class ProjectService {
         List<Project> projects=projectRepository.findByCollaboratorsUserId(userId);
 
         return projects.stream()
-                .filter(p->p.getCollaborators().stream().anyMatch(c->c.getUserId().equals(userId) && c.getStatus()==(CollaboratorStatus.ACCEPTED)))
+                .filter(p->p.getCollaborators().stream().anyMatch(c->c.getUserId().equals(userId) && c.getStatus()==(CollaboratorStatus.PENDING)))
                 .map(p->{
                     Collaborator collab=p.getCollaborators().stream().filter(c->c.getUserId().equals(userId)).findFirst().orElseThrow();
 

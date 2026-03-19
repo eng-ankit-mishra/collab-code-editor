@@ -9,7 +9,7 @@ import java.time.Instant;
 @Data
 @Builder
 public class ProjectDashboardResponse {
-    private String Id;
+    private String id;
     private String name;
     private Language language;
 
