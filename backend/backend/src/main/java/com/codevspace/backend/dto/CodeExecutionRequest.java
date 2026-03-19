@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CodeExecutionRequest {
-    private Language language;
+    private Integer languageId;
     private String sourceCode;
     private String stdin;
 
