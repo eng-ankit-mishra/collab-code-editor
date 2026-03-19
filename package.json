@@ -4,6 +4,9 @@
     "lodash.debounce": "^4.0.8",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "y-monaco": "^0.1.6",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.30"
   }
 }
