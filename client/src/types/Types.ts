@@ -25,29 +25,34 @@ export type ModalProps={
 
 
 export type ProjectDetails = {
-  _id?: string;
-  projectName: string;
-  userId?: string;
-  code: string;
-  template: Language;
-
+  id?: string;
+  name: string;
+  description: string;
+  language: Language;
+  codeContent: string;
   createdAt?: Date;
   updatedAt?: Date;
-
-  lastUpdatedBy?: {
-    userId?: string;
-    userName?: string;
-  };
 };
 
+export type DashboardProjects={
+  id:string;
+  name: string;
+  language: Language;
+  permission: string;
+  ownershipStatus:string;
+  updatedAt: Date;
+
+}
+
 export interface RecentCardProps {
-  project: ProjectDetails[];
+  projects: DashboardProjects[];
   onDelete?:(val:string)=>void
   onRename?:(id:string,val:string)=>void
 }
 
 export type DashboardOutlet={
-  project:ProjectDetails[],
+  projects:DashboardProjects[],
+  setProjects:(projects:DashboardProjects)=>void
   setShowModals:(val:boolean)=>void
   handleDelete:(val:string)=>void
   handleRename:(id:string,val:string)=>void
@@ -56,71 +61,44 @@ export type DashboardOutlet={
 
 export type codeAreaProps = {
   projectObject: ProjectDetails;
-  accessRole: "OWNER" | "EDITOR" | "VIEWER";
+  accessRole?: "OWNER" | "EDITOR" | "VIEWER";
 };
-
-import type { Session } from "@supabase/supabase-js";
 
 export type AuthContextType = {
-  session: Session | null;
-  loading: boolean;
-
-  signInUser: (
-    email: string,
-    password: string
-  ) => Promise<{
-    success: boolean;
-    error?: string;
-    data?: any;
-  }>;
-
-  signUpUser: (
-    name: string,
-    email: string,
-    password: string
-  ) => Promise<{
-    success: boolean;
-    error?: string;
-    data?: any;
-  }>;
-
-  signOutUser: () => Promise<{
-    success: boolean;
-    error?: string;
-  }>;
-
-  signInWithGoogle: () => Promise<void>;
-  signInWithGithub: () => Promise<void>;
-
-  resetPassword: (
-    email: string
-  ) => Promise<{
-    success: boolean;
-    error?: string;
-  }>;
-
-  updateUser: (
-    password: string
-  ) => Promise<{
-    success: boolean;
-    error?: string;
-  }>;
-
-  /** 🔴 Secure backend + Supabase admin delete */
-  deleteAccount: (
-    accessToken: string
-  ) => Promise<{
-    success: boolean;
-    error?: string;
-  }>;
+  session: string | null;
+  login:(email:string)=>void;
+  logout: () => void;
+  userDetail:UserDetail | null;
+  globalLoading?:boolean;
+  setGlobalLoading?:(loading:boolean) => void;
 };
-
-
-
 
 export type MenuProps={
   setShowModals:(val:boolean)=>void
 }
 export type AvatarProps={
   name:string | undefined
+}
+
+export type Invitation = {
+  projectId: string;
+  projectName: string;
+  language:Language;
+  permission:string;
+  invitedBy:string;
+};
+
+export type UserDetail={
+  name: string,
+  email: string,
+  avatarUrl: string,
+}
+
+export type ChatMessage={
+  id:string,
+  projectId:string,
+  senderId:string,
+  senderName:string,
+  content:string,
+  createdAt:Date,
 }
