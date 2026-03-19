@@ -65,7 +65,7 @@ export default function Chat({ roomId }: { roomId?: string }) {
     stompClientRef.current=client;
 
     return ()=>{
-      client.deactivate();
+      void client.deactivate();
     }
 
   }, [roomId,session]);
