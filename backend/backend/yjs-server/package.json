@@ -10,6 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "dotenv": "^17.3.1",
     "jsonwebtoken": "^9.0.3",
     "ws": "^8.19.0",
     "y-websocket": "^1.4.5",
