@@ -5,7 +5,7 @@
 
 [[redirects]]
 from = "/api/*"
-to = "http://13.127.234.216/api/:splat"
+to = "http://13.127.234.216/:splat"
 status = 200
 force = true
 
