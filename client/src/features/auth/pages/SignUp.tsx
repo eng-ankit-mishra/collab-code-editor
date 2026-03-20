@@ -58,7 +58,7 @@ export default function SignUp() {
   const handleGoogleClick = async () => {
     try {
       setLoading(true);
-      window.location.href = "http://13.127.234.216:8080/oauth2/authorization/google";
+      window.location.href = "/api/oauth2/authorization/google";
     } catch (err) {
       console.error(err);
       setError("Google signup failed.");
@@ -69,7 +69,7 @@ export default function SignUp() {
   const handleGithubClick = async () => {
     try {
       setLoading(true);
-      window.location.href = "http://13.127.234.216:8080/oauth2/authorization/github";
+      window.location.href = "/api/oauth2/authorization/github";
     } catch (err) {
       console.error(err);
       setError("GitHub signup failed.");
