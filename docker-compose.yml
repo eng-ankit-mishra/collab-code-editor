@@ -13,8 +13,8 @@ services:
   mongodb:
     image: mongo:latest
     container_name: codevspace-mongo
-    ports:
-      - "27017:27017"
+    expose:
+      - "27017"
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -24,7 +24,7 @@ services:
     build: backend/backend
     container_name: codevspace-backend
     ports:
-      - "8080:8080"
+      - "8080"
     depends_on:
       - mongodb
     networks:
@@ -35,8 +35,8 @@ services:
   yjs-server:
     build: backend/backend/yjs-server
     container_name: codevspace-yjs
-    ports:
-      - "1234:1234"
+    expose:
+      - "1234"
     networks:
       - codevspace-network
     env_file:
