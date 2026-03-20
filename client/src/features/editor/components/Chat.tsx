@@ -39,7 +39,7 @@ export default function Chat({ roomId }: { roomId?: string }) {
     void fetchChats()
 
     const client=new Client({
-      webSocketFactory:()=>new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws`),
+      webSocketFactory:()=>new SockJS(`https://codevspace.codes/api/ws`),
       connectHeaders:{
         Authorization: `Bearer ${session}`
       },
