@@ -83,7 +83,7 @@ const lang = [
 
 export async function getRuntimes(): Promise<Language[]> {
   try {
-    const res = await fetch("http://3.110.31.131:2358/languages");
+    const res = await fetch("/judge0/languages");
     const data = await res.json();
     
     const finalLanguages: Language[] = [];
