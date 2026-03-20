@@ -2,20 +2,49 @@ package com.codevspace.backend.service;
 
 import com.codevspace.backend.dto.CodeExecutionRequest;
 import com.codevspace.backend.dto.CodeExecutionResponse;
+import com.codevspace.backend.dto.LanguageDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 import tools.jackson.databind.JsonNode;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class CodeExecutionService {
 
     @Value("${app.judge0.url}")
     private String judge0Url;
+
+    private final RestTemplate restTemplate;
+
+    public List<LanguageDTO> getLanguages(){
+        String endpoint = judge0Url + "/languages";
+
+        try {
+            // 2. Make the HTTP GET request. We tell Spring to expect an Array of LanguageDTOs.
+            ResponseEntity<LanguageDTO[]> response = restTemplate.getForEntity(endpoint, LanguageDTO[].class);
+
+            // 3. Check if successful and map it to your response object
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                List<LanguageDTO> languageList = Arrays.asList(response.getBody());
+                return  languageList;
+            } else {
+                throw new RuntimeException("Failed to fetch languages from Judge0. Status: " + response.getStatusCode());
+            }
+
+        } catch (Exception e) {
+            // If the Judge0 server is down or the URL is wrong, it will land here
+            throw new RuntimeException("Error communicating with Judge0: " + e.getMessage());
+        }
+    }
 
     public CodeExecutionResponse executeCode(CodeExecutionRequest request) {
         RestClient restClient = RestClient.create();

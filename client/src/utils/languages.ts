@@ -1,5 +1,7 @@
 import type { Language } from "../types/Types.ts";
 import { FaJava } from "react-icons/fa";
+// @ts-ignore
+import projectService from "../services/projectService.js"
 import {
   SiC,
   SiCplusplus,
@@ -83,8 +85,7 @@ const lang = [
 
 export async function getRuntimes(): Promise<Language[]> {
   try {
-    const res = await fetch("/judge0/languages");
-    const data = await res.json();
+    const data = await projectService.getAllLanguages();
     
     const finalLanguages: Language[] = [];
 

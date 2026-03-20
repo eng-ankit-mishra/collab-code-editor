@@ -62,6 +62,11 @@ public class ProjectController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/languages")
+    public ResponseEntity<List<LanguageDTO>> getAllLanguages() {
+        return ResponseEntity.ok().body(codeExecutionService.getLanguages());
+    }
+
     @PostMapping("/{projectId}/execute")
     public ResponseEntity<CodeExecutionResponse> executeCode(@PathVariable String projectId,@RequestBody CodeExecutionRequest request,@AuthenticationPrincipal User currentUser){
 
