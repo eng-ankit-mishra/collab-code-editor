@@ -1,4 +1,17 @@
 services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: codevspace-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - yjs-server
+    networks:
+      - codevspace-network
+
   mongodb:
     image: mongo:latest
     container_name: codevspace-mongo
@@ -10,7 +23,7 @@ services:
       - codevspace-network
 
   backend:
-    build: .
+    build: backend/backend
     container_name: codevspace-backend
     ports:
       - "8080:8080"
@@ -19,17 +32,17 @@ services:
     networks:
       - codevspace-network
     env_file:
-      - .env
+      - backend/backend/.env
 
   yjs-server:
-    build: ./yjs-server
+    build: backend/backend/yjs-server
     container_name: codevspace-yjs
     ports:
       - "1234:1234"
     networks:
       - codevspace-network
     env_file:
-      - .env
+      - backend/backend/.env
 
 networks:
   codevspace-network:
