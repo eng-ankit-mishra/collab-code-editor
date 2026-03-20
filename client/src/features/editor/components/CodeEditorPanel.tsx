@@ -99,7 +99,7 @@ export default function CodeEditorPanel({
     const roomName=`${projectObject.id}?token=${session}`;
 
     const provider = new WebsocketProvider(
-        "ws://localhost:1234",
+        "ws://13.127.234.216:1234",
         roomName,
         ydoc
     )
