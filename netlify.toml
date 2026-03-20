@@ -2,19 +2,6 @@
   base = "client"
   command = "npm run build"
   publish = "dist"
-
-[[redirects]]
-from = "/api/*"
-to = "http://13.127.234.216/:splat"
-status = 200
-force = true
-
-
-[[redirects]]
-from = "/judge0/*"
-to = "http://3.110.31.131:2358/:splat"
-status = 200
-force = true
 [[redirects]]
   from = "/*"
   to = "/index.html"

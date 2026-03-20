@@ -1,4 +1,4 @@
-/api/* http://13.127.234.216/:splat 200
+/api/*  http://13.127.234.216/:splat  200
 /judge0/* http://3.110.31.131:2358/:splat  200
 /*    /index.html   200
 
