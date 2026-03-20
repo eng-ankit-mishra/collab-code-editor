@@ -96,10 +96,14 @@ export default function CodeEditorPanel({
 
     const ydoc=new Y.Doc();
 
-    const roomName=`${projectObject.id}?token=${session}`;
+    const wsProtocol= window.location.protocol === "https" ? "wss://" : "ws://"
+
+    const serverUrl=`${wsProtocol}codevspace.codes/ws`;
+
+    const roomName=`${projectObject.id}?token=${session || ""}`;
 
     const provider = new WebsocketProvider(
-        "ws://codevspace.codes",
+        serverUrl,
         roomName,
         ydoc
     )
