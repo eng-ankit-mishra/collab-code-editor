@@ -18,17 +18,14 @@ jobs:
             set -e
             
             echo "Connected to EC2 server."
-            cd collab-code-editor/backend/backend
-            
-            echo "Fetching latest code from GitHub..."
-            git fetch --all
-            
-            echo "Hard resetting to match origin/main perfectly..."
-            git reset --hard origin/main
+            cd collab-code-editor
+
+            git pull origin main
 
             sudo docker-compose down
-            
-            echo "Rebuilding and restarting Docker Containers"
+
             sudo docker-compose up -d --build
+            
+            sudo docker image prune -f
             
             echo "Deployment Successful! "
