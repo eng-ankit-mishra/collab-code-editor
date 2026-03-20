@@ -1,8 +1,6 @@
 services:
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
+    build: ./client
     container_name: codevspace-frontend
     ports:
       - "80:80"
