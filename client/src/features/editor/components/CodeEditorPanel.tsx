@@ -96,7 +96,7 @@ export default function CodeEditorPanel({
 
     const ydoc=new Y.Doc();
 
-    const wsProtocol= window.location.protocol === "https" ? "wss://" : "ws://"
+    const wsProtocol= window.location.protocol === "https:" ? "wss://" : "ws://"
 
     const serverUrl=`${wsProtocol}codevspace.codes/ws`;
 
