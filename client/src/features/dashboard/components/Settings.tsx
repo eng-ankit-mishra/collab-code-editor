@@ -26,6 +26,7 @@ export default function Settings() {
         const fetchUserStats=async ()=>{
             try{
                 const data=await projectService.getUserStats();
+                console.log(data);
                 setStats({
                     totalWorkedOn: data.totalProjects,
                     createdByYou: data.createdByUser,
