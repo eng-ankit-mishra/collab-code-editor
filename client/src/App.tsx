@@ -18,7 +18,7 @@ const Dashboard = lazy(() => import("./features/dashboard/pages/Dashboard.tsx"))
 const CodeEditor = lazy(() => import("./features/editor/pages/./CodePlayground"));
 const AllRepository = lazy(() => import("./features/repository/components/AllRepository.tsx"));
 const Recent = lazy(() => import("./features/repository/components/Recent.tsx"));
-//const Settings= lazy(()=>import("./features/dashboard/components/Settings.tsx"));
+const Settings= lazy(()=>import("./features/dashboard/components/Settings.tsx"));
 const SharedWithMe=lazy(()=>import("./features/dashboard/components/ShareWithMe.tsx"))
 
 export default function App() {
@@ -86,8 +86,7 @@ export default function App() {
           <Route index element={<Recent />} />
           <Route path="allrepository" element={<AllRepository />} />
           <Route path="invititions" element={<Invitations />} />
-          <Route path="sharewithme" element={<SharedWithMe />} />
-    {/*<Route path="settings" element={<Settings />} />*/}
+          <Route path="sharewithme" element={<SharedWithMe />} /><Route path="settings" element={<Settings />} />
         </Route>
 
         <Route
