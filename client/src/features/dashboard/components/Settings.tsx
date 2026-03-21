@@ -30,7 +30,7 @@ export default function Settings() {
                 setStats({
                     totalWorkedOn: data.totalProjects,
                     createdByYou: data.createdByUser,
-                    collaboratedProjects: data.sharedWithYou,
+                    collaboratedProjects: data.sharedWithUser,
                 })
             }catch(err){
                 setError("Something went wrong");
@@ -41,7 +41,7 @@ export default function Settings() {
         }
 
         void fetchUserStats();
-    }, [stats]);
+    }, []);
 
 
 
