@@ -41,7 +41,7 @@ export default function Settings() {
         }
 
         void fetchUserStats();
-    }, []);
+    }, [stats]);
 
 
 
