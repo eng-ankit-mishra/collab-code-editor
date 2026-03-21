@@ -98,5 +98,10 @@ public class ProjectController {
         return ResponseEntity.ok(message);
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<UserStatsResponse> getUserStats(@AuthenticationPrincipal User currentUser){
+        return ResponseEntity.ok().body(projectService.getUserStats(currentUser));
+    }
+
 
 }
