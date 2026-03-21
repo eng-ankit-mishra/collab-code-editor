@@ -1,60 +1,66 @@
-# 🧑‍💻 codeCollab – Real-Time Collaborative Code Editor
+# 🧑‍💻 CoDevSpace – Real-Time Collaborative Code Editor & Execution Engine
 
-codeCollab is a real-time collaborative code editor that allows multiple users to write and edit code simultaneously with <100ms latency. It supports 10+ programming languages, syntax highlighting, and user authentication. Built for seamless team collaboration and developer experience.
+CoDevSpace is a high-performance, real-time collaborative coding platform. Moving beyond standard web sockets, this application utilizes a dual-brain microservice architecture: a **Spring Boot** backend handling core business logic, secure JWT authentication, and in-browser code compilation via Judge0, alongside a dedicated **Node.js** WebSocket server using **Yjs CRDTs** for sub-50ms, zero-conflict code syncing.
+
+Built for seamless team collaboration, execution, and developer experience.
 
 ---
 
-## 🌟 Features
+## 🌟 Core Features
 
-- 🧠 Real-time multi-user code collaboration (WebSocket)
-- 🔒 Supabase authentication with secure session handling
-- 🎨 Syntax highlighting for 10+ languages (powered by Monaco Editor)
-- ⚡ Fast and responsive frontend built with React + TypeScript
-- 🌐 REST API backend with Node.js and Express
-- 📊 Optimized for performance: 40% faster API responses
-- 🛡️ Role-based access control
-- 💾 Session persistence support (retains code state per user)
+- 🧠 **Conflict-Free Collaboration:** Real-time multi-user code syncing powered by Yjs CRDTs and WebSockets.
+- ⚙️ **Live Code Execution:** Secure, sandboxed code compilation across 8+ programming languages via the Judge0 API.
+- 🔒 **Enterprise-Grade Security:** Custom JWT authentication, session management, and role-based access control built from the ground up with Spring Security.
+- 💬 **Live Project Chat:** Dedicated STOMP WebSocket broker routing real-time messaging between collaborators.
+- 🚀 **Cloud-Native Deployment:** Fully containerized 3-tier architecture deployed to an AWS EC2 instance via an automated GitHub Actions CI/CD pipeline.
+- 💾 **Optimized Storage:** Persistent session data and chat logs managed by MongoDB with O(1) retrieval time.
 
 ---
 
 ## 🛠️ Tech Stack
 
-**Frontend:**  
-`React` · `TypeScript` · `Tailwind CSS` · `Monaco Editor`  
+**Frontend:** `React` · `TypeScript` · `Tailwind CSS` · `Vite` · `Monaco Editor`  
 
-**Backend:**  
-`Node.js` · `Express` · `WebSocket`
+**Backend (Microservices):** `Java / Spring Boot` (Core API, Auth, Chat Broker)  
+`Node.js` (Yjs CRDT WebSocket Server)  
 
-**Auth & DB:**  
-`Supabase` (Auth + Realtime) · `MongoDB`
+**Database & APIs:** `MongoDB` · `Judge0 API` 
 
-**Tools:**  
-`Vite` · `GitHub Actions` · `Postman`
+**DevOps & Infrastructure:** `Docker` · `Docker Compose` · `AWS EC2` · `GitHub Actions`
 
 ---
 
 ## 🚀 Live Demo
 
-🔗 **Live Link:** [collab-code-editor.netlify.app](https://codevspace.netlify.app)  
-🔗 **GitHub Repo:** [github.com/dev-ankit-mishra/collab-code-editor](https://github.com/dev-ankit-mishra/collab-code-editor)
+🔗 **Live Application:** [codevspace.codes](https://codevspace.codes/)  
+🔗 **GitHub Repository:** [github.com/eng-ankit-mishra/collab-code-editor](https://github.com/eng-ankit-mishra/collab-code-editor)
 
 ---
 
 ## 📸 Screenshots
  
 > ![Home Page Screenshot](/client/src/assets/home.png)
+*(Feel free to update this image path to a screenshot of the new live editor!)*
 
 ---
 
 ## 🧪 How to Run Locally
 
+Because CoDevSpace utilizes a microservice architecture, the easiest way to run the entire stack locally is via Docker Compose.
+
 ```bash
-# 1. Clone the repo
-git clone https://github.com/dev-ankit-mishra/collab-code-editor.git
-
-# 2. Install dependencies
+# 1. Clone the repository
+git clone [https://github.com/eng-ankit-mishra/collab-code-editor.git](https://github.com/eng-ankit-mishra/collab-code-editor.git)
 cd collab-code-editor
-npm install
 
-# 3. Start the development server
-npm run dev
+# 2. Add your environment variables
+# Create a .env file in the root or respective backend/client folders 
+# (You will need your MongoDB URI, JWT Secret, and Judge0 URL)
+
+# 3. Build and spin up all microservices and databases
+docker-compose up --build
+
+# The application will be available at:
+# Frontend: http://localhost:5173
+# Spring Boot API: http://localhost:8080
+# Yjs WebSocket Server: ws://localhost:1234
