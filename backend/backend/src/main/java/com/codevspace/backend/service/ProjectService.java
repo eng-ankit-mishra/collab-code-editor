@@ -1,9 +1,6 @@
 package com.codevspace.backend.service;
 
-import com.codevspace.backend.dto.InvitationResponse;
-import com.codevspace.backend.dto.InviteCollaboratorRequest;
-import com.codevspace.backend.dto.ProjectCreateRequest;
-import com.codevspace.backend.dto.ProjectDashboardResponse;
+import com.codevspace.backend.dto.*;
 import com.codevspace.backend.model.Collaborator;
 import com.codevspace.backend.model.Project;
 import com.codevspace.backend.model.User;
@@ -209,6 +206,20 @@ public class ProjectService {
         }
 
         projectRepository.save(project);
+    }
+
+    public UserStatsResponse getUserStats(User currentUser){
+        List<Project> projects=projectRepository.findByCollaboratorsUserId(currentUser.getId());
+
+        Integer totalProject=projects.size();
+        Integer createdByUser=projects.stream().filter(p->p.getCollaborators().stream().anyMatch(c->c.getUserId().equals(currentUser.getId()) && c.getRole()==ProjectRole.OWNER)).toList().size();
+        Integer sharedWithUser=projects.stream().filter(p->p.getCollaborators().stream().anyMatch(c->c.getUserId().equals(currentUser.getId()) && c.getRole()!=ProjectRole.OWNER)).toList().size();
+
+        return UserStatsResponse.builder()
+                .totalProjects(totalProject)
+                .createdByUser(createdByUser)
+                .sharedWithUser(sharedWithUser)
+                .build();
     }
 
 
