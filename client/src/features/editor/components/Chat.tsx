@@ -99,7 +99,7 @@ export default function Chat({ roomId }: { roomId?: string }) {
 
       <div className="flex-1 overflow-y-auto space-y-2">
         {messages.map((m, i) => {
-          const isMe = m.senderName === userDetail?.name;
+          const isMe = m.senderId === userDetail?.id;
 
           return (
             <div
