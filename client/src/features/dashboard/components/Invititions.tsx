@@ -3,7 +3,7 @@ import { useAuth } from "../../auth/context/useAuth.tsx";
 import Button from "../../../components/ui/Button.tsx";
 import SplashScreen from "../../../components/loader/PageScreenLoader.tsx";
 import type { Invitation } from "../../../types/Types.ts";
-import { Code, User } from "lucide-react";
+import {Code, Eye, Pencil, User} from "lucide-react";
 // @ts-ignore
 import projectService from "../../../services/projectService.js"
 
@@ -19,7 +19,8 @@ export default function Invitations() {
     async function fetchInvites() {
       try {
         const data = await projectService.getAllInvitations();
-        setInvites(data);
+        const sortedProjects=[...data].sort((a,b)=>new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        setInvites(sortedProjects);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -83,7 +84,7 @@ export default function Invitations() {
             </span>
           </p>
           <p className=" mt-1 ">
-            <span className="flex gap-2 items-center">Permission: {invite.permission}</span>
+            {invite.permission === "EDITOR" ? <span className="flex gap-2 items-center"><Pencil size={14}/>Permission: Can edit</span> : <span className="flex gap-2 items-center" ><Eye size={14}/>Permission: Can view</span>}
           </p>
             <p className=" mt-1 flex gap-2 items-center">
             <User size={14}/>
