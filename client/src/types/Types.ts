@@ -22,7 +22,7 @@ export type ModalProps={
   create: (val:ProjectDetails)=> Promise<string | undefined>; 
 }
 
- type Collaborators={
+export type Collaborators={
   userId:string;
   projectRole:ProjectRole
 }
@@ -42,7 +42,7 @@ export type ProjectDetails = {
   description: string;
   language: Language;
   codeContent: string;
-  collaborator: Collaborators[];
+  collaborator?: Collaborators[];
   createdAt?: Date;
   updatedAt?: Date;
 };

@@ -3,7 +3,7 @@ import { PlusCircle, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {useState, useEffect, type FormEvent} from "react";
 import { getRuntimes } from "../../../utils/languages.ts";
-import type { Language, ModalProps, ProjectDetails } from "../../../types/Types.ts";
+import type { Language, ModalProps, ProjectDetails} from "../../../types/Types.ts";
 
 export default function Modals({ setShowModals, create }: ModalProps) {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function Modals({ setShowModals, create }: ModalProps) {
       name,
       description,
       language:lang,
-      codeContent:lang.boilerplate
+      codeContent:lang.boilerplate,
     };
 
     try {
