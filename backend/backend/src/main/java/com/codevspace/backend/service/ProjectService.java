@@ -79,13 +79,13 @@ public class ProjectService {
 
     }
 
-    public List<ProjectDashboardResponse> getDashboardProjects(String userId){
-        List<Project> projects=projectRepository.findByCollaboratorsUserId(userId);
+    public List<ProjectDashboardResponse> getDashboardProjects(User user){
+        List<Project> projects=projectRepository.findByCollaboratorsUserId(user.getId());
 
         return projects.stream().filter(project -> project.getCollaborators().stream()
-                .anyMatch(c -> c.getUserId().equals(userId) && c.getStatus() == CollaboratorStatus.ACCEPTED)).map(project->{
+                .anyMatch(c -> c.getUserId().equals(user.getId()) && c.getStatus() == CollaboratorStatus.ACCEPTED)).map(project->{
             Collaborator userCollab=project.getCollaborators().stream()
-                    .filter(c->c.getUserId().equals(userId))
+                    .filter(c->c.getUserId().equals(user.getId()))
                     .findFirst()
                     .orElseThrow();
             String permissionText=userCollab.getRole().name().charAt(0) + userCollab.getRole().name().substring(1).toLowerCase();
@@ -96,6 +96,7 @@ public class ProjectService {
                     .name(project.getName())
                     .language(project.getLanguage())
                     .permission(permissionText)
+                    .ownerName(user.getName())
                     .ownershipStatus(ownershipStatus)
                     .updatedAt(project.getUpdatedAt())
                     .build();
@@ -221,6 +222,18 @@ public class ProjectService {
                 .sharedWithUser(sharedWithUser)
                 .build();
     }
+
+    public void renameProject(String projectId,String newName){
+        Project project=projectRepository.findById(projectId).orElseThrow(()->new IllegalArgumentException("Project Not Found"));
+        project.setName(newName);
+        projectRepository.save(project);
+    }
+
+    public void deleteProject(String projectId){
+        Project project=projectRepository.findById(projectId).orElseThrow(()->new IllegalArgumentException("Project Not Found"));
+        projectRepository.delete(project);
+    }
+
 
 
 }
