@@ -1,4 +1,4 @@
-import { createPortal } from "react-dom";
+ import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import Button from "../../../components/ui/Button.tsx";
 // @ts-ignore
@@ -13,6 +13,7 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [success,setSuccess] = useState<string | null>(null);
   const [permission, setPermission] = useState<"view" | "edit">("view");
 
 
@@ -24,6 +25,21 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
     document.addEventListener("keydown", handleEsc);
     return () => document.removeEventListener("keydown", handleEsc);
   }, [onClose]);
+
+  useEffect(() => {
+    if(!success && !error){
+      return;
+    }
+      const timer=setTimeout(()=>{
+        setSuccess(null)
+        setError(null)
+      },5000)
+
+
+    return ()=>{
+      clearTimeout(timer);
+    }
+  }, []);
 
  
 
@@ -43,6 +59,7 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
 
     setEmail("");
     setPermission("view");
+    setSuccess("Invitation sent successfully");
   
 
   } catch (err: any) {
@@ -121,6 +138,11 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
     {error}
   </p>
 )}
+          {success && (
+              <p className="text-green-500 text-sm mt-2 text-center">
+                {success}
+              </p>
+          )}
 
 
         </form>
