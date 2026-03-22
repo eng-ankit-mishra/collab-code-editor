@@ -14,6 +14,7 @@ public class ProjectDashboardResponse {
     private Language language;
 
     private String permission;
+    private String ownerName;
     private String ownershipStatus;
 
     private Instant updatedAt;
