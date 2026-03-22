@@ -22,6 +22,18 @@ export type ModalProps={
   create: (val:ProjectDetails)=> Promise<string | undefined>; 
 }
 
+ type Collaborators={
+  userId:string;
+  projectRole:ProjectRole
+}
+
+ // @ts-ignore
+export enum ProjectRole  {
+   OWNER,
+  EDITOR,
+   VIEWER,
+}
+
 
 
 export type ProjectDetails = {
@@ -30,6 +42,7 @@ export type ProjectDetails = {
   description: string;
   language: Language;
   codeContent: string;
+  collaborator: Collaborators[];
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -39,6 +52,7 @@ export type DashboardProjects={
   name: string;
   language: Language;
   permission: string;
+  ownerName: string,
   ownershipStatus:string;
   updatedAt: Date;
 
@@ -87,6 +101,7 @@ export type Invitation = {
 };
 
 export type UserDetail={
+  id:string,
   name: string,
   email: string,
   avatarUrl: string,
