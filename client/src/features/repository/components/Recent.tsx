@@ -29,7 +29,7 @@ export default function Recent() {
       <div className="flex items-center flex-wrap gap-8 p-6">
         {projects.length > 0 ? (
           <RecentCard
-            projects={projects}
+            projects={projects.filter((_,i)=>i<5)}
           />
         ) : (
           <p className="w-full text-gray-400 text-xl text-center mt-10">
