@@ -24,9 +24,11 @@ export default function Dashboard() {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const data = await projectService.getAllProject()
-        console.log(data)
-        setProjects(Array.isArray(data) ? data : []);
+        const data= await projectService.getAllProject()
+        const sortedProjects = [...data].sort((a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+        setProjects(sortedProjects);
       } catch (err) {
         console.error("Fetch failed:", err);
         setProjects([]);
