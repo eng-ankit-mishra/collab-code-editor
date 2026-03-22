@@ -12,6 +12,8 @@ const projectService={
     respondToInvitation:(projectId,accept)=>apiClient.post(`/api/projects/${projectId}/invitations/respond`,{accept}).then(res=>res.data),
     getAllLanguages:()=>apiClient.get("/api/projects/languages").then(res=>res.data),
     getUserStats:()=>apiClient.get("/api/projects/stats").then(res=>res.data),
+    renameProject:(projectId,newName)=>apiClient.patch(`/api/${projectId}/rename`,{newName}).then(res=>res.data),
+    deleteProject:(projectId)=>apiClient.delete(`/api/projects/${projectId}`)
 }
 
 export default projectService;
