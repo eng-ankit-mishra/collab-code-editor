@@ -1,23 +1,20 @@
-import { useState, useRef, useEffect } from "react";
+import {useEffect, useRef, useState} from "react";
 import ExecutionPanel from "./ExecutionPanel.tsx";
-import type { editor } from "monaco-editor";
+import type {editor} from "monaco-editor";
 import Editor from "@monaco-editor/react";
-import type { codeAreaProps } from "../../../types/Types.ts";
-import { formatDistanceToNow } from "date-fns";
-import { useDebounce } from "../../../hooks/useDebounce.ts";
-import { FaCloudUploadAlt } from "react-icons/fa";
+import {type codeAreaProps, ProjectRole} from "../../../types/Types.ts";
+import {formatDistanceToNow} from "date-fns";
+import {useDebounce} from "../../../hooks/useDebounce.ts";
+import {FaCloudUploadAlt} from "react-icons/fa";
 import Button from "../../../components/ui/Button.tsx";
-import { Download } from "lucide-react";
+import {Download} from "lucide-react";
 import {useAuth} from "../../auth/context/useAuth.tsx"
 // @ts-ignore
 import projectService from "../../../services/projectService";
 
 import * as Y from "yjs"
-import { WebsocketProvider } from "y-websocket"
-import { MonacoBinding } from "y-monaco"
-
-
-
+import {WebsocketProvider} from "y-websocket"
+import {MonacoBinding} from "y-monaco"
 
 
 export default function CodeEditorPanel({
@@ -29,6 +26,11 @@ export default function CodeEditorPanel({
   const [value, setValue] = useState<string>(
     projectObject.codeContent
   );
+
+  const role = projectObject.collaborator.find(
+      (c) => c.userId === userDetail?.id
+  )?.projectRole;
+
 
   const isFirstRender=useRef(true);
 
@@ -216,11 +218,11 @@ export default function CodeEditorPanel({
             </span>
           </p>
 
-          {/*{isReadOnly && (*/}
-          {/*  <p className="text-xs text-yellow-400">*/}
-          {/*    View-only access — ask the owner for edit permission*/}
-          {/*  </p>*/}
-          {/*)}*/}
+          {role===ProjectRole.VIEWER && (
+            <p className="text-xs text-yellow-400">
+              View-only access — ask the owner for edit permission
+            </p>
+          )}
         </div>
 
         {/* EDITOR */}
@@ -236,6 +238,7 @@ export default function CodeEditorPanel({
             }
             options={{
               minimap: { enabled: false },
+              readOnly: role===ProjectRole.VIEWER,
             }}
           />
         </div>
