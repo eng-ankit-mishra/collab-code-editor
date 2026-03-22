@@ -1,12 +1,33 @@
 import type { RecentCardProps } from "../../../types/Types.ts";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Code, User, Clock, Pencil } from "lucide-react";
+import { Code, User, Clock, Pencil, Eclipse } from "lucide-react";
+// @ts-ignore
+import projectService from "../../../services/projectService";
+import RenameModals from "../../dashboard/components/RenameModals.tsx";
+import {useState} from "react";
 
 export default function RecentCard({
   projects
 }: RecentCardProps) {
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const [openRenameModal,setOpenRenameModal] = useState(false);
+
+  async function handleDelete(id:string){
+    if(!id){
+      return;
+    }
+    try{
+      await projectService.deleteProject(id)
+      window.location.reload();
+    }catch(err){
+      console.error(err);
+    }finally {
+      setOpen(false)
+    }
+  }
 
   return (
     <>
@@ -15,9 +36,26 @@ export default function RecentCard({
         return (
           <div
             key={p.id}
-            className="w-68 h-44 bg-gray-700/30 border border-white/10 shadow-md hover:scale-[1.02] hover:shadow-xl transition-all cursor-pointer duration-300 p-5 rounded-md flex flex-col justify-between"
+            className="relative w-68 h-44 bg-gray-700/30 border border-white/10 shadow-md hover:scale-[1.02] hover:shadow-xl transition-all cursor-pointer duration-300 p-5 rounded-md flex flex-col justify-between"
             onClick={() => navigate(`/editor/${p.id}`)}
           >
+
+            <div className={"absolute top-3 right-3"}>
+              <Eclipse size={16}/>
+              {
+                open &&(
+                    <ul>
+                      <li onClick={()=>setOpenRenameModal(true)}>Rename</li>
+                      {
+                        openRenameModal &&
+                          <RenameModals setOpen={()=>setOpen(prev=>!prev)} id={p.id}/>
+                      }
+                      <li onClick={()=>handleDelete(p.id)}>Delete</li>
+                    </ul>
+                  )
+
+              }
+            </div>
 
             <div className="relative flex items-center justify-between">
               <span className="text-lg font-semibold text-white truncate">
@@ -25,7 +63,6 @@ export default function RecentCard({
               </span>
             </div>
 
-            {/* ---------- META ---------- */}
             <div className="space-y-1 pt-2 text-sm text-zinc-400">
               <p className="flex items-center gap-2">
                 <Code size={14} />
@@ -39,7 +76,7 @@ export default function RecentCard({
 
               <p className="flex items-center gap-2">
                 <User size={14} />
-                  {p.ownershipStatus}
+                 Created by {p.ownerName}
               </p>
             </div>
 
