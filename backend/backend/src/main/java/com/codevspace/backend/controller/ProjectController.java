@@ -42,7 +42,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<List<ProjectDashboardResponse>> getAllProjects(@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok().body(projectService.getDashboardProjects(currentUser.getId()));
+        return ResponseEntity.ok().body(projectService.getDashboardProjects(currentUser));
     }
 
     @GetMapping("/shared")
@@ -91,7 +91,7 @@ public class ProjectController {
         return ResponseEntity.ok().body(invitations);
     }
 
-    @PostMapping("{projectId}/invitations/respond")
+    @PostMapping("/{projectId}/invitations/respond")
     public ResponseEntity<String> respondToInvitation(@PathVariable String projectId,@AuthenticationPrincipal User currentUser,@RequestBody RespondInvitationRequest request){
     projectService.respondToInvitation(projectId, currentUser.getId(), request.isAccept());
         String message = request.isAccept() ? "Invitation accepted!" : "Invitation rejected.";
@@ -101,6 +101,18 @@ public class ProjectController {
     @GetMapping("/stats")
     public ResponseEntity<UserStatsResponse> getUserStats(@AuthenticationPrincipal User currentUser){
         return ResponseEntity.ok().body(projectService.getUserStats(currentUser));
+    }
+
+    @PatchMapping("/{projectId}/rename")
+    public ResponseEntity<String> renameProject(@PathVariable String projectId,@RequestBody String newName){
+        projectService.renameProject(projectId,newName);
+        return ResponseEntity.ok("Renamed Successfully");
+    }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<String> deleteProject(@PathVariable String projectId){
+        projectService.deleteProject(projectId);
+        return ResponseEntity.ok("Deleted Successfully");
     }
 
 
