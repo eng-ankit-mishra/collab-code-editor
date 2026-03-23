@@ -12,8 +12,8 @@ export default function RecentCard({
 }: RecentCardProps) {
   const navigate = useNavigate();
 
-  const [open, setOpen] = useState(false);
-  const [openRenameModal,setOpenRenameModal] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [renameId, setRenameId] = useState<string | null>(null);
 
   async function handleDelete(id:string){
     if(!id){
@@ -25,7 +25,7 @@ export default function RecentCard({
     }catch(err){
       console.error(err);
     }finally {
-      setOpen(false)
+      setOpenId(null)
     }
   }
 
@@ -38,45 +38,42 @@ export default function RecentCard({
             className="relative w-68 h-44 bg-gray-700/30 border border-white/10 shadow-md hover:scale-[1.02] hover:shadow-xl transition-all cursor-pointer duration-300 p-5 rounded-md flex flex-col justify-between"
             onClick={() => navigate(`/editor/${p.id}`)}
         >
-          <div
-              className="absolute top-3 right-3 p-4"
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpen(prev => !prev);
-              }}
-          >
-            <Ellipsis size={16} />
+              <div
+                  className="absolute top-3 right-3 p-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenId((prev) => (prev === p.id ? null : p.id));
+                  }}
+              >
+                <Ellipsis size={16} />
 
-            {open && (
-                <ul
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute right-0 mt-2 bg-gray-800 rounded shadow-md"
-                >
-                  <li
-                      onClick={() => setOpenRenameModal(true)}
-                      className="px-3 py-1 hover:bg-gray-700 cursor-pointer"
-                  >
-                    Rename
-                  </li>
+                {openId === p.id && (
+                    <ul
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute right-0 mt-2 bg-gray-800 rounded shadow-md z-50"
+                    >
+                      <li
+                          onClick={() => {
+                            setRenameId(p.id);
+                            setOpenId(null);
+                          }}
+                          className="px-3 py-1 hover:bg-gray-700 cursor-pointer"
+                      >
+                        Rename
+                      </li>
 
-                  {openRenameModal && (
-                      <RenameModals
-                          setOpen={setOpenRenameModal}
-                          id={p.id}
-                      />
-                  )}
+                      <li
+                          onClick={() => handleDelete(p.id)}
+                          className="px-3 py-1 hover:bg-gray-700 cursor-pointer"
+                      >
+                        Delete
+                      </li>
+                    </ul>
+                )}
+              </div>
 
-                  <li
-                      onClick={() => handleDelete(p.id)}
-                      className="px-3 py-1 hover:bg-gray-700 cursor-pointer"
-                  >
-                    Delete
-                  </li>
-                </ul>
-            )}
-          </div>
 
-            <div className="relative flex items-center justify-between">
+              <div className="relative flex items-center justify-between">
               <span className="text-lg font-semibold text-white truncate">
                 {p.name}
               </span>
@@ -107,6 +104,12 @@ export default function RecentCard({
                 { addSuffix: true }
               )}
             </p>
+              {renameId === p.id && (
+                  <RenameModals
+                      setOpen={() => setRenameId(null)}
+                      id={p.id}
+                  />
+              )}
           </div>
         );
       })}
