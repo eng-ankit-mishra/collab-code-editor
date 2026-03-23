@@ -19,7 +19,7 @@ function stringToColor(str: string): string {
 export default function Avatar({
   name,
   size = 32,
-                                   url="LOCAL"
+                                   url
 }: AvatarProps) {
   if (!name) return null;
 

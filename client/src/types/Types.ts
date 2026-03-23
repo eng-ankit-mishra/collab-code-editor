@@ -90,7 +90,7 @@ export type MenuProps={
 }
 export type AvatarProps={
   name:string | undefined
-  size:number
+  size?:number
   url:string
 }
 
