@@ -1,7 +1,7 @@
 import type { RecentCardProps } from "../../../types/Types.ts";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Code, User, Clock, Pencil, Ellipsis } from "lucide-react";
+import { Code, User, Clock, Pencil } from "lucide-react";
 // @ts-ignore
 import projectService from "../../../services/projectService";
 import RenameModals from "../../dashboard/components/RenameModals.tsx";
@@ -50,7 +50,7 @@ export default function RecentCard({ projects }: RecentCardProps) {
                         setOpenId(isOpen ? null : p.id);
                       }}
                   >
-                    <Ellipsis size={16} />
+                    {/*<Ellipsis size={16} />*/}
                   </div>
 
                   {isOpen && (
