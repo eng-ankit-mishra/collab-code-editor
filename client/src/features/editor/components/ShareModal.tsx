@@ -33,13 +33,13 @@ export default function ShareModal({ roomId, onClose }: ShareModalProps) {
       const timer=setTimeout(()=>{
         setSuccess(null)
         setError(null)
-      },5000)
+      },2000)
 
 
     return ()=>{
       clearTimeout(timer);
     }
-  }, []);
+  }, [success,error]);
 
  
 
