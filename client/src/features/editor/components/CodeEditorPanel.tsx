@@ -27,9 +27,9 @@ export default function CodeEditorPanel({
     projectObject.codeContent
   );
 
-  const role = projectObject.collaborator?.find(
+  const role = projectObject.collaborators?.find(
       (c) => c.userId === userDetail?.id
-  )?.projectRole;
+  )?.role;
 
 
   const isFirstRender=useRef(true);

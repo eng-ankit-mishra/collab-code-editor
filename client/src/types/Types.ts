@@ -24,7 +24,7 @@ export type ModalProps={
 
 export type Collaborators={
   userId:string;
-  projectRole:ProjectRole
+  role:ProjectRole
 }
 
  // @ts-ignore
@@ -42,7 +42,7 @@ export type ProjectDetails = {
   description: string;
   language: Language;
   codeContent: string;
-  collaborator?: Collaborators[];
+  collaborators?: Collaborators[];
   createdAt?: Date;
   updatedAt?: Date;
 };
