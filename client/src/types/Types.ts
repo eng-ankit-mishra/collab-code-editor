@@ -88,9 +88,11 @@ export type AuthContextType = {
 export type MenuProps={
   setShowModals:(val:boolean)=>void
 }
-// export type AvatarProps={
-//   name:string | undefined
-// }
+export type AvatarProps={
+  name:string | undefined
+  size:number
+  url:string
+}
 
 export type Invitation = {
   projectId: string;

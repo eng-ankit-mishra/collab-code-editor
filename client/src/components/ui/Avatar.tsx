@@ -1,8 +1,4 @@
-
-type AvatarProps = {
-  name: string;
-  size?: number; // optional size (default 32px)
-};
+import type {AvatarProps} from "../../types/Types.ts";
 
 function stringToColor(str: string): string {
   let hash = 0;
@@ -23,6 +19,7 @@ function stringToColor(str: string): string {
 export default function Avatar({
   name,
   size = 32,
+                                   url="LOCAL"
 }: AvatarProps) {
   if (!name) return null;
 
@@ -35,17 +32,24 @@ export default function Avatar({
     .toUpperCase();
 
   return (
-    <div
-      title={name}
-      className="flex items-center justify-center rounded-full text-white font-bold select-none"
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: stringToColor(name),
-        fontSize: size * 0.4,
-      }}
-    >
-      {initials}
-    </div>
+      <>
+
+          { url=='LOCAL' ?
+              (<div
+                  title={name}
+                  className="flex items-center justify-center rounded-full text-white font-bold select-none"
+                  style={{
+                      width: size,
+                      height: size,
+                      backgroundColor: stringToColor(name),
+                      fontSize: size * 0.4,
+                  }}
+              >
+                  {initials}
+              </div>) : (
+                  <img width={size} height={size} src={url} alt="Avatar" />
+              )
+          }
+      </>
   );
 }
