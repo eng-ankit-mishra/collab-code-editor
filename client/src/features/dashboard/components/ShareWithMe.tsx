@@ -30,7 +30,7 @@ export default function SharedWithMe() {
     async function fetchSharedProjects() {
       try {
         const data = await projectService.sharedProject();
-        const sortedProjects=[...data].sort((a, b) => new Date(a.updatedAt).getTime()-new Date(b.updated_at).getTime());
+        const sortedProjects=[...data].sort((b, a) => new Date(a.updatedAt).getTime()-new Date(b.updated_at).getTime());
         setProjects(sortedProjects);
       } catch (err: any) {
         console.error("❌ Failed to fetch shared projects:", err);
@@ -79,7 +79,7 @@ export default function SharedWithMe() {
     <p className="text-sm text-neutral-400 mt-1 pb-10">
   Projects shared with you by collaborators
 </p>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 ">
+    <div className="flex items-center flex-wrap gap-8 p-6">
       
       {projects.map((project) => (
         <div
