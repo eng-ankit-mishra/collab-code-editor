@@ -106,7 +106,7 @@ export type UserDetail={
   id:string,
   name: string,
   email: string,
-  avatarUrl: string,
+  avatarURL: string,
 }
 
 export type ChatMessage={

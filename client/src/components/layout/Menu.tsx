@@ -130,7 +130,7 @@ export default function Menu({ setShowModals }: MenuProps) {
           onClick={() => navigate("/dashboard/settings")}
           className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-neutral-800 transition"
         >
-          <Avatar name={userName || "User"} url={userDetail?.avatarUrl || "LOCAL"} />
+          <Avatar name={userName || "User"} url={userDetail?.avatarURL || "LOCAL"} />
 
           <div className="flex flex-col overflow-hidden">
             <span className="text-sm font-medium text-white truncate">
