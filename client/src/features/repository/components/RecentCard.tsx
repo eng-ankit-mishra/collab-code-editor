@@ -40,7 +40,7 @@ export default function RecentCard({
             onClick={() => navigate(`/editor/${p.id}`)}
           >
 
-            <div className={"absolute top-3 right-3"} onClick={() => setOpenRenameModal(true)}>
+            <div className={"absolute top-3 right-3 px-2 py-1 "} onClick={() => setOpenRenameModal(true)}>
               <Ellipsis size={16} />
               {
                 open &&(
