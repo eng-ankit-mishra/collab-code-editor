@@ -31,6 +31,8 @@ export default function CodeEditorPanel({
       (c) => c.userId === userDetail?.id
   )?.role;
 
+  console.log(role)
+
 
   const isFirstRender=useRef(true);
 
@@ -193,10 +195,6 @@ export default function CodeEditorPanel({
   URL.revokeObjectURL(url);
 }
 
-
-  /* =====================================
-     UI
-     ===================================== */
   return (
     <main className="w-full h-full flex gap-1">
       <div className="w-[56rem] flex flex-col px-4 gap-4">
