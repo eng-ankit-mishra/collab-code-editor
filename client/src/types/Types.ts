@@ -24,15 +24,15 @@ export type ModalProps={
 
 export type Collaborators={
   userId:string;
-  role:ProjectRole
+  role:string
 }
 
  // @ts-ignore
-export enum ProjectRole  {
-   OWNER,
-  EDITOR,
-   VIEWER,
-}
+// enum ProjectRole  {
+//    OWNER,
+//   EDITOR,
+//    VIEWER,
+// }
 
 
 

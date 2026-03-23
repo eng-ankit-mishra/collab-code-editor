@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import ExecutionPanel from "./ExecutionPanel.tsx";
 import type {editor} from "monaco-editor";
 import Editor from "@monaco-editor/react";
-import {type codeAreaProps, ProjectRole} from "../../../types/Types.ts";
+import {type codeAreaProps} from "../../../types/Types.ts";
 import {formatDistanceToNow} from "date-fns";
 import {useDebounce} from "../../../hooks/useDebounce.ts";
 import {FaCloudUploadAlt} from "react-icons/fa";
@@ -170,9 +170,6 @@ export default function CodeEditorPanel({
     }
   };
 
-  /* =====================================
-     DOWNLOAD
-     ===================================== */
  function handleDownload() {
   const code = editorRef.current?.getValue() || "";
 
@@ -216,7 +213,7 @@ export default function CodeEditorPanel({
             </span>
           </p>
 
-          {role===ProjectRole.VIEWER && (
+          {role==="VIEWER" && (
             <p className="text-xs text-yellow-400">
               View-only access — ask the owner for edit permission
             </p>
@@ -236,7 +233,7 @@ export default function CodeEditorPanel({
             }
             options={{
               minimap: { enabled: false },
-              readOnly: role===ProjectRole.VIEWER,
+              readOnly: role==="VIEWER",
             }}
           />
         </div>
