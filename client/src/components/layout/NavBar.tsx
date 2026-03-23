@@ -116,7 +116,7 @@ export default function NavBar({ authRequired = false,shareRequired=false,projec
         </div>) : (
           <div className='relative flex flex-col' ref={dropDownRef}>
             <div onClick={()=>setIsOpen(prev=>!prev)} className=' text-white flex  gap-1.5 items-center cursor-pointer'>
-             <Avatar name={userName || "Guest"} />
+             <Avatar name={userName || "Guest"} url={userDetail?.avatarUrl || "LOCAL"}/>
             <span>{userId || "Guest"}</span>
             </div>
             {isOpen &&
