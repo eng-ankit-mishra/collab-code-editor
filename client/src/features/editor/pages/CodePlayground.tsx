@@ -19,6 +19,7 @@ export default function CodePlayground() {
 
       try {
         const data = await projectService.getProjectById(projectId)
+          console.log(data)
         setProject(data);
       } catch (err) {
         console.error("❌ Failed to load project:", err);

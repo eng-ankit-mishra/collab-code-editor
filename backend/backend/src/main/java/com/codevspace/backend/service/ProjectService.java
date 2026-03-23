@@ -104,13 +104,13 @@ public class ProjectService {
         }).collect(Collectors.toList());
     }
 
-    public List<ProjectDashboardResponse> getSharedProjects(String userId){
-        List<Project> projects=projectRepository.findByCollaboratorsUserId(userId);
+    public List<ProjectDashboardResponse> getSharedProjects(User user){
+        List<Project> projects=projectRepository.findByCollaboratorsUserId(user.getId());
 
         return projects.stream().filter(project -> project.getCollaborators().stream()
-                .anyMatch(c -> c.getUserId().equals(userId) && c.getStatus() == CollaboratorStatus.ACCEPTED && c.getRole()!=ProjectRole.OWNER)).map(project->{
+                .anyMatch(c -> c.getUserId().equals(user.getId()) && c.getStatus() == CollaboratorStatus.ACCEPTED && c.getRole()!=ProjectRole.OWNER)).map(project->{
             Collaborator userCollab=project.getCollaborators().stream()
-                    .filter(c->c.getUserId().equals(userId))
+                    .filter(c->c.getUserId().equals(user.getId()))
                     .findFirst()
                     .orElseThrow();
             String permissionText=userCollab.getRole().name().charAt(0) + userCollab.getRole().name().substring(1).toLowerCase();
@@ -121,6 +121,7 @@ public class ProjectService {
                     .name(project.getName())
                     .language(project.getLanguage())
                     .permission(permissionText)
+                    .ownerName(user.getName())
                     .ownershipStatus(ownershipStatus)
                     .updatedAt(project.getUpdatedAt())
                     .build();
