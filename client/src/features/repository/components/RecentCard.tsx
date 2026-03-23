@@ -1,7 +1,7 @@
 import type { RecentCardProps } from "../../../types/Types.ts";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Code, User, Clock, Pencil, Eclipse } from "lucide-react";
+import { Code, User, Clock, Pencil, Ellipsis} from "lucide-react";
 // @ts-ignore
 import projectService from "../../../services/projectService";
 import RenameModals from "../../dashboard/components/RenameModals.tsx";
@@ -40,8 +40,8 @@ export default function RecentCard({
             onClick={() => navigate(`/editor/${p.id}`)}
           >
 
-            <div className={"absolute top-3 right-3"}>
-              <Eclipse size={16}/>
+            <div className={"absolute top-3 right-3"} onClick={() => setOpenRenameModal(true)}>
+              <Ellipsis size={16} />
               {
                 open &&(
                     <ul>
