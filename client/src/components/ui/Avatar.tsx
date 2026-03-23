@@ -47,7 +47,12 @@ export default function Avatar({
               >
                   {initials}
               </div>) : (
-                  <img width={size} height={size} src={url} alt="Avatar" />
+                  <img style={{
+                      width: size,
+                      height: size,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                  }} src={url} alt="Avatar" />
               )
           }
       </>
