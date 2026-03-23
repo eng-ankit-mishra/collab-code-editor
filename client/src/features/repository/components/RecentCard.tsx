@@ -33,29 +33,48 @@ export default function RecentCard({
     <>
       {projects.map((p) => {
 
-        return (
-          <div
+        return (<div
             key={p.id}
             className="relative w-68 h-44 bg-gray-700/30 border border-white/10 shadow-md hover:scale-[1.02] hover:shadow-xl transition-all cursor-pointer duration-300 p-5 rounded-md flex flex-col justify-between"
             onClick={() => navigate(`/editor/${p.id}`)}
+        >
+          <div
+              className="absolute top-3 right-3 p-4"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(prev => !prev);
+              }}
           >
+            <Ellipsis size={16} />
 
-            <div className={"absolute top-3 right-3 p-4 "} onClick={() => setOpenRenameModal(true)}>
-              <Ellipsis size={16} />
-              {
-                open &&(
-                    <ul>
-                      <li onClick={()=>setOpenRenameModal(true)}>Rename</li>
-                      {
-                        openRenameModal &&
-                          <RenameModals setOpen={()=>setOpen(prev=>!prev)} id={p.id}/>
-                      }
-                      <li onClick={()=>handleDelete(p.id)}>Delete</li>
-                    </ul>
-                  )
+            {open && (
+                <ul
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute right-0 mt-2 bg-gray-800 rounded shadow-md"
+                >
+                  <li
+                      onClick={() => setOpenRenameModal(true)}
+                      className="px-3 py-1 hover:bg-gray-700 cursor-pointer"
+                  >
+                    Rename
+                  </li>
 
-              }
-            </div>
+                  {openRenameModal && (
+                      <RenameModals
+                          setOpen={setOpenRenameModal}
+                          id={p.id}
+                      />
+                  )}
+
+                  <li
+                      onClick={() => handleDelete(p.id)}
+                      className="px-3 py-1 hover:bg-gray-700 cursor-pointer"
+                  >
+                    Delete
+                  </li>
+                </ul>
+            )}
+          </div>
 
             <div className="relative flex items-center justify-between">
               <span className="text-lg font-semibold text-white truncate">
