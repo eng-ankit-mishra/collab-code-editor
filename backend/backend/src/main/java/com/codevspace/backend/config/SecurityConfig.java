@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/run","/api/code/**","/api/contact","/api/contact/**","/api/auth/**","/oauth2/**","/login/**","/api/ws/**","/error").permitAll()
+                        .requestMatchers("/api/contact","/api/contact/**","/api/auth/**","/oauth2/**","/login/**","/api/ws/**","/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
