@@ -44,6 +44,8 @@ server.on("upgrade", (request, socket, head) => {
 
 wss.on("connection", setupWSConnection);
 
-server.listen(1234, () => {
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
     console.log("WebSocket Server is Running on PORT 1234");
 });
