@@ -53,7 +53,7 @@ export default function LogIn() {
   const handleGoogleClick = async () => {
     try {
       setLoading(true);
-      window.location.href = "https://codevspace.codes/oauth2/authorization/google";
+      window.location.href = "https://api.codevspace.codes/oauth2/authorization/google";
     } catch (err) {
       console.error(err);
       setError("Google login failed.");
@@ -64,7 +64,7 @@ export default function LogIn() {
   const handleGithubClick = async () => {
     try {
       setLoading(true);
-      window.location.href = "https://codevspace.codes/oauth2/authorization/github";
+      window.location.href = "https://api.codevspace.codes/oauth2/authorization/github";
     } catch (err) {
       console.error(err);
       setError("GitHub login failed.");

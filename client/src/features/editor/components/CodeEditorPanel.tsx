@@ -102,7 +102,7 @@ export default function CodeEditorPanel({
 
     const wsProtocol= window.location.protocol === "https:" ? "wss://" : "ws://"
 
-    const serverUrl=`${wsProtocol}codevspace.codes/ws`;
+    const serverUrl=`${wsProtocol}socket.codevspace.codes/ws`;
 
     const roomName=`${projectObject.id}?token=${session || ""}`;
 
