@@ -39,11 +39,7 @@ export default function Chat({ roomId }: { roomId?: string }) {
     void fetchChats()
 
     const client=new Client({
-      webSocketFactory:() => {
-          // Strip out any quotes just in case the session string has them
-          const safeToken = session ? session.replace(/['"]+/g, '').trim() : "";
-          return new SockJS(`https://codevspace.codes/api/ws?token=${safeToken}`);
-      },
+      webSocketFactory:()=>new SockJS(`https://api.codevspace.codes/api/ws`),
       connectHeaders:{
         Authorization: `Bearer ${session}`
       },
