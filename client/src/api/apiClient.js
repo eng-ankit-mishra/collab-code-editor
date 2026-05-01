@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const apiClient = axios.create({
-    baseURL: "",
+    baseURL: import.meta.env.VITE_API_BASE_URL || "https://collab-code-editor-backend-ybyk.onrender.com",
     headers:{
         "Content-Type": "application/json",
     }
