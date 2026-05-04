@@ -172,7 +172,7 @@ public class ProjectService {
 
         projectRepository.save(project);
 
-        emailService.sendInviteRequest(request.getEmail(), project.getName(), currentUser.getName());
+        //emailService.sendInviteRequest(request.getEmail(), project.getName(), currentUser.getName());
     }
 
     public List<InvitationResponse> getMyInvitation(String userId){
